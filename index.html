@@ -488,34 +488,57 @@
             }
         }
 
-        function playLoudJapaneseChime() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+        // Global variables for alarm sound looping
+        let alarmAudioCtx = null;
+        let alarmInterval = null;
+        let lastSeenOfferId = localStorage.getItem('sakura_last_offer_id') || null;
 
-                const playSharpTone = (freq, type, startTime, duration, vol) => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = type;
-                    osc.frequency.value = freq;
-                    gain.gain.setValueAtTime(vol, audioCtx.currentTime + startTime);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + startTime + duration);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(audioCtx.currentTime + startTime);
-                    osc.stop(audioCtx.currentTime + startTime + duration);
+        // 🔔 Loud Japanese Ringtone Loop (Plays every 800ms until turned off)
+        function startContinuousAlarm() {
+            try {
+                if (!alarmAudioCtx) {
+                    alarmAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (alarmAudioCtx.state === 'suspended') {
+                    alarmAudioCtx.resume();
+                }
+
+                stopContinuousAlarm();
+
+                const playChimePulse = () => {
+                    const playSharpTone = (freq, type, startTime, duration, vol) => {
+                        const osc = alarmAudioCtx.createOscillator();
+                        const gain = alarmAudioCtx.createGain();
+                        osc.type = type;
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(vol, alarmAudioCtx.currentTime + startTime);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, alarmAudioCtx.currentTime + startTime + duration);
+                        osc.connect(gain);
+                        gain.connect(alarmAudioCtx.destination);
+                        osc.start(alarmAudioCtx.currentTime + startTime);
+                        osc.stop(alarmAudioCtx.currentTime + startTime + duration);
+                    };
+
+                    playSharpTone(1318.51, 'sine', 0.0, 0.25, 1.0);
+                    playSharpTone(1760.00, 'sine', 0.15, 0.40, 1.0);
                 };
 
-                // Loud 2-tone alert chime (E6 -> A6)
-                playSharpTone(1318.51, 'sine', 0.0, 0.35, 0.9);
-                playSharpTone(1760.00, 'sine', 0.15, 0.55, 1.0);
+                playChimePulse();
+                alarmInterval = setInterval(playChimePulse, 800);
             } catch (e) {
-                console.log("Audio play error:", e);
+                console.log("Audio alarm loop error:", e);
             }
         }
 
-        function showOfferPopup(name, oldPrice, newPrice) {
-            playLoudJapaneseChime();
+        function stopContinuousAlarm() {
+            if (alarmInterval) {
+                clearInterval(alarmInterval);
+                alarmInterval = null;
+            }
+        }
+
+        function showUserOfferPopup(name, oldPrice, newPrice) {
+            startContinuousAlarm();
 
             let modal = document.getElementById('customOfferModal');
             if (!modal) {
@@ -523,29 +546,70 @@
                 modal.id = 'customOfferModal';
                 modal.style.cssText = `
                     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                    background: rgba(15, 23, 42, 0.85); display: flex; 
+                    background: rgba(15, 23, 42, 0.90); display: flex; 
                     justify-content: center; align-items: center; z-index: 99999; 
-                    backdrop-filter: blur(4px); padding: 20px;
+                    backdrop-filter: blur(6px); padding: 20px;
                 `;
                 document.body.appendChild(modal);
             }
 
             modal.innerHTML = `
-                <div style="background: #1e293b; border: 2px solid #facc15; border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(250, 204, 21, 0.3);">
-                    <div style="font-size: 40px; margin-bottom: 10px;">🌸</div>
-                    <div style="color: #facc15; font-size: 12px; font-weight: bold; letter-spacing: 1px;">SAKURA MARKET OFFERS</div>
-                    <h2 style="color: #ffffff; font-size: 20px; margin: 8px 0 14px 0;">আজকের বিশেষ সেল অফার!</h2>
-                    <div style="background: #0f172a; border-radius: 12px; padding: 14px; margin-bottom: 18px; border: 1px solid #334155;">
-                        <div style="font-size: 16px; font-weight: bold; color: #f8fafc; margin-bottom: 6px;">${name}</div>
-                        <div style="display: flex; justify-content: center; align-items: center; gap: 10px; font-family: monospace;">
-                            <span style="color: #f87171; text-decoration: line-through; font-size: 15px;">৳ ${oldPrice}</span>
-                            <span style="color: #4ade80; font-size: 22px; font-weight: 900;">৳ ${newPrice}</span>
+                <div style="background: #1e293b; border: 2px solid #facc15; border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 10px 40px rgba(250, 204, 21, 0.4);">
+                    <div style="font-size: 42px; margin-bottom: 10px;">🌸</div>
+                    <div style="color: #facc15; font-size: 12px; font-weight: bold; letter-spacing: 1px;">SAKURA MARKET SPECIAL OFFER</div>
+                    <h2 style="color: #ffffff; font-size: 20px; margin: 8px 0 14px 0;">আজকের নতুন বিশেষ সেল অফার!</h2>
+                    
+                    <div style="background: #0f172a; border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid #334155;">
+                        <div style="font-size: 17px; font-weight: bold; color: #f8fafc; margin-bottom: 8px;">${name}</div>
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 12px; font-family: monospace;">
+                            <span style="color: #f87171; text-decoration: line-through; font-size: 16px;">৳ ${oldPrice}</span>
+                            <span style="color: #4ade80; font-size: 24px; font-weight: 900;">৳ ${newPrice}</span>
                         </div>
                     </div>
-                    <button onclick="document.getElementById('customOfferModal').style.display='none'" style="width: 100%; background: #e11d48; color: #ffffff; border: none; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 15px; cursor: pointer;">অফারটি দেখুন</button>
+
+                    <button onclick="dismissOfferAlarm()" style="width: 100%; background: #e11d48; color: #ffffff; border: none; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4);">
+                        <i class="fa-solid fa-check"></i> OK - অফারটি দেখুন
+                    </button>
                 </div>
             `;
             modal.style.display = 'flex';
+        }
+
+        function dismissOfferAlarm() {
+            stopContinuousAlarm();
+            document.getElementById('customOfferModal').style.display = 'none';
+        }
+
+        function fetchOffersFromCloud() {
+            if (!SCRIPT_URL || SCRIPT_URL.includes("YOUR_APPS")) return;
+            
+            fetch(SCRIPT_URL + "?action=getOffers")
+                .then(res => res.json())
+                .then(data => {
+                    offers = data || [];
+                    renderOffers();
+                    document.getElementById('syncIndicator').innerText = "🟢 লাইভ সিঙ্কড";
+
+                    if (offers.length > 0) {
+                        const newestOffer = offers[0];
+                        
+                        if (lastSeenOfferId === null) {
+                            lastSeenOfferId = newestOffer.id;
+                            localStorage.setItem('sakura_last_offer_id', newestOffer.id);
+                        } else if (String(newestOffer.id) !== String(lastSeenOfferId)) {
+                            lastSeenOfferId = newestOffer.id;
+                            localStorage.setItem('sakura_last_offer_id', newestOffer.id);
+
+                            if (!isAdminMode) {
+                                showUserOfferPopup(newestOffer.name, newestOffer.oldPrice, newestOffer.newPrice);
+                            }
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error("Cloud fetch error", err);
+                    document.getElementById('syncIndicator').innerText = "🔴 অফলাইন";
+                });
         }
 
         function handleAddOffer(e) {
@@ -565,23 +629,21 @@
                 desc: document.getElementById('itemDesc').value.trim()
             };
 
-            if (typeof SCRIPT_URL !== 'undefined' && SCRIPT_URL && !SCRIPT_URL.includes("YOUR_APPS")) {
-                fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...newOffer, action: 'add' })
-                }).then(() => {
-                    document.getElementById('offerForm').reset();
-                    showOfferPopup(name, oldPrice, newPrice);
-                    setTimeout(fetchOffersFromCloud, 1500);
-                });
-            } else {
-                offers.unshift(newOffer);
-                localStorage.setItem('sakura_market_offers', JSON.stringify(offers));
-                renderOffers();
-                showOfferPopup(name, oldPrice, newPrice);
-            }
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...newOffer, action: 'add' })
+            }).then(() => {
+                lastSeenOfferId = newOffer.id;
+                localStorage.setItem('sakura_last_offer_id', newOffer.id);
+
+                document.getElementById('offerForm').reset();
+                alert(`✅ অফার সফলভাবে পোস্ট করা হয়েছে!\n\nঅন্যান্য ব্যবহারকারীদের মোবাইলে রিংটোন অ্যালার্ম ও পপআপ চালু হবে।`);
+                setTimeout(fetchOffersFromCloud, 1500);
+            }).catch(err => {
+                alert("⚠️ ক্লাউডে পোস্ট করতে সমস্যা হয়েছে!");
+            });
         }
 
         function deleteOffer(id) {
