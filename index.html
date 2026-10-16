@@ -353,6 +353,7 @@
         }
 
         .btn-delete-item {
+            width: 100%;
             background: #dc2626;
             color: white;
             border: none;
@@ -360,7 +361,11 @@
             border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
-            display: none;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
         .no-offers {
@@ -781,6 +786,7 @@
                 isAdminMode = false;
                 document.getElementById('adminPanel').style.display = 'none';
                 renderOffers();
+                alert('🔒 অ্যাডমিন মোড লক করা হয়েছে।');
                 return;
             }
 
@@ -789,7 +795,7 @@
                 isAdminMode = true;
                 document.getElementById('adminPanel').style.display = 'block';
                 renderOffers();
-                alert('🔓 অ্যাডমিন মোড আনলক হয়েছে!');
+                alert('🔓 অ্যাডমিন মোড আনলক হয়েছে! এখন ডিলিট বাটন দেখতে পাবেন।');
             } else if (inputPass !== null) {
                 alert('❌ ভুল পাসওয়ার্ড!');
             }
@@ -838,14 +844,17 @@
         }
 
         function deleteOffer(id) {
-            if (confirm('⚠️ গুগল শিট থেকে অফারটি মুছে ফেলতে চান?')) {
+            if (confirm('⚠️ গুগল শিট থেকে অফারটি চিরতরে মুছে ফেলতে চান?')) {
                 fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: id, action: 'delete' })
+                    body: JSON.stringify({ id: String(id), action: 'delete' })
                 }).then(() => {
+                    alert('🗑️ অফার সফলভাবে মুছে ফেলা হয়েছে!');
                     setTimeout(fetchOffersFromCloud, 1500);
+                }).catch(err => {
+                    alert("⚠️ ডিলিট করতে সমস্যা হয়েছে!");
                 });
             }
         }
@@ -1016,12 +1025,14 @@
             const now = Date.now();
 
             container.innerHTML = offers.map(o => {
-                // Safety check: handle if name or price is missing or not a string
                 const itemName = (o.name !== undefined && o.name !== null) ? String(o.name) : "পণ্য";
                 const itemPrice = (o.newPrice !== undefined && o.newPrice !== null) ? o.newPrice : 0;
+                const itemId = (o.id !== undefined && o.id !== null) ? String(o.id) : "";
                 
                 let imgContent = o.img ? `<img src="${o.img}" alt="${itemName}">` : `<i class="fa-solid fa-tag fa-3x" style="color:var(--accent-gold);"></i>`;
-                let deleteBtnHtml = isAdminMode ? `<button class="btn-delete-item" onclick="deleteOffer('${o.id}')" style="display:block; margin-top:8px;"><i class="fa-solid fa-trash"></i></button>` : '';
+                
+                // Show delete button ONLY when Admin Mode is unlocked
+                let deleteBtnHtml = isAdminMode ? `<button class="btn-delete-item" onclick="deleteOffer('${itemId}')"><i class="fa-solid fa-trash"></i> অফার মুছে ফেলুন</button>` : '';
 
                 const safeName = itemName.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 
@@ -1035,7 +1046,7 @@
                 return `
                     <div class="offer-poster-card">
                         <div class="poster-badge">${o.badge || 'FLASH SALE'}</div>
-                        <div class="timer-badge" id="timer-${o.id}">লোড হচ্ছে...</div>
+                        <div class="timer-badge" id="timer-${itemId}">লোড হচ্ছে...</div>
                         <div class="poster-img-box">${imgContent}</div>
                         <div class="poster-content">
                             <div class="poster-item-name">${itemName}</div>
@@ -1045,9 +1056,9 @@
                                 <span class="new-price">৳ ${itemPrice}</span>
                             </div>
                             <div class="btn-card-action">
-                                <button id="btn-add-${o.id}" 
+                                <button id="btn-add-${itemId}" 
                                         ${isExpired ? 'disabled' : ''} 
-                                        onclick="addToCart('${o.id}', '${safeName}', '${itemPrice}', '${expiry}')" 
+                                        onclick="addToCart('${itemId}', '${safeName}', '${itemPrice}', '${expiry}')" 
                                         class="btn-add-cart ${isExpired ? 'expired' : ''}">
                                     <i class="fa-solid ${isExpired ? 'fa-lock' : 'fa-cart-plus'}"></i> 
                                     ${isExpired ? 'অফার শেষ' : 'কার্টে যোগ করুন (+)'}
