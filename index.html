@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সাকুরা মার্কেট অফার - দোকানে পিকআপ অর্ডার</title>
+    <title>সাকুরা মার্কেট অফার - দোকানে পিকআপ অর্ডার ও টাইম লিমিট</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -89,12 +89,12 @@
         }
 
         .pickup-notice {
-            background: rgba(250, 204, 21, 0.1);
-            border: 1px dashed var(--accent-gold);
+            background: rgba(225, 29, 72, 0.1);
+            border: 1px dashed var(--accent-pink);
             padding: 10px;
             border-radius: 10px;
             font-size: 12px;
-            color: var(--accent-gold);
+            color: #fca5a5;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -247,6 +247,21 @@
             z-index: 2;
         }
 
+        .timer-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 10.5px;
+            font-weight: bold;
+            font-family: 'Space Mono', monospace;
+            z-index: 2;
+        }
+
         .poster-img-box {
             width: 100%;
             height: 180px;
@@ -323,6 +338,12 @@
             cursor: pointer;
             text-align: center;
             text-decoration: none;
+        }
+
+        .btn-order.expired {
+            background: var(--border-color);
+            color: var(--text-muted);
+            cursor: not-allowed;
         }
 
         .btn-delete-item {
@@ -439,7 +460,7 @@
                     <div class="brand-logo">咲</div>
                     <div>
                         <div class="brand-title">সাকুরা মার্কেট অফার</div>
-                        <div class="brand-subtitle">দোকানে পিকআপ সার্ভিস</div>
+                        <div class="brand-subtitle">দোকানে পিকআপ ও রিয়েল-টাইম লিমিট</div>
                     </div>
                 </div>
                 <div class="header-actions">
@@ -448,8 +469,8 @@
             </div>
 
             <div class="pickup-notice">
-                <i class="fa-solid fa-store"></i>
-                <span><strong>নোট:</strong> আমাদের পার্সেল/হোম ডেলিভারি সুবিধা নেই। অর্ডারের পর পণ্য দোকান থেকে সরাসরি সংগ্রহ করতে হবে।</span>
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span><strong>শর্ত:</strong> হোম ডেলিভারি নেই। অর্ডার করার পর অবশ্যই <strong>১ ঘণ্টার মধ্যে</strong> দোকানে এসে পণ্য সংগ্রহ করতে হবে, অন্যথায় অর্ডার স্বয়ংক্রিয়ভাবে বাতিল বলে গণ্য হবে।</span>
             </div>
 
             <button class="btn-install-widget" id="installWidgetBtn" onclick="installWidgetApp()">
@@ -459,7 +480,7 @@
 
         <!-- Admin Control Panel -->
         <div class="admin-panel" id="adminPanel">
-            <div class="panel-title"><i class="fa-solid fa-cloud-arrow-up"></i> নতুন অফার পোস্টার পাবলিশ করুন</div>
+            <div class="panel-title"><i class="fa-solid fa-cloud-arrow-up"></i> নতুন অফার ও টাইম লিমিট সেটআপ</div>
             <form id="offerForm" onsubmit="handleAddOffer(event)">
                 <div class="form-group">
                     <label class="form-label">পণ্যের নাম (Item Name)</label>
@@ -476,8 +497,13 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="form-label">অফারের সময়সীমা (Minutes Duration)</label>
+                    <input type="number" id="itemDuration" class="form-control" value="30" placeholder="যেমন: 30 বা 45 মিনিট" required>
+                    <small style="color: var(--text-muted); font-size: 11px;">অ্যাডমিন হিসেবে এই অফারটি কত মিনিট পর্যন্ত কার্যকর থাকবে তা সেট করুন।</small>
+                </div>
+                <div class="form-group">
                     <label class="form-label">ছাড়ের ব্যাজ (Tag)</label>
-                    <input type="text" id="itemBadge" class="form-control" value="TODAY'S SALE">
+                    <input type="text" id="itemBadge" class="form-control" value="LIMITED FLASH SALE">
                 </div>
                 <div class="form-group">
                     <label class="form-label">বিবরণ (Description)</label>
@@ -495,7 +521,7 @@
         </div>
 
         <div class="offers-section-title">
-            <span><i class="fa-solid fa-fire" style="color: var(--accent-gold);"></i> ক্লাউড লাইভ অফার লিস্ট</span>
+            <span><i class="fa-solid fa-stopwatch" style="color: var(--accent-gold);"></i> রিয়েল-টাইম ফ্ল্যাশ সেল অফার</span>
             <span id="syncIndicator" style="font-size: 11px; color: var(--green-text);">🟢 সিঙ্কড</span>
         </div>
 
@@ -504,7 +530,7 @@
         </div>
 
         <div class="footer-credit">
-            © SAKURA MARKET OFFERS • SYLHET • STORE PICKUP ONLY
+            © SAKURA MARKET OFFERS • SYLHET • 1-HOUR PICKUP POLICY
         </div>
     </div>
 
@@ -541,11 +567,11 @@
 
                 <div class="form-group">
                     <label class="form-label">অতিরিক্ত কোনো নোট/পরিমাণ <span class="optional-badge">ঐচ্ছিক</span></label>
-                    <input type="text" id="custNote" class="form-control" placeholder="যেমন: ২টি আইটেম রেডি রাখবেন">
+                    <input type="text" id="custNote" class="form-control" placeholder="যেমন: ১ ঘণ্টার মধ্যে আসছি">
                 </div>
 
                 <button type="submit" class="btn-whatsapp-send">
-                    <i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপে অর্ডার পাঠান
+                    <i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপে অর্ডার পাঠান (রিয়েল-টাইম ডাটা সহ)
                 </button>
             </form>
         </div>
@@ -587,6 +613,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             fetchOffersFromCloud();
             setInterval(fetchOffersFromCloud, 30000);
+            // Update countdown timers every second
+            setInterval(updateTimersUI, 1000);
         });
 
         function previewLocalImage(event) {
@@ -654,17 +682,22 @@
             const name = document.getElementById('itemName').value.trim();
             const oldPrice = parseFloat(document.getElementById('itemOldPrice').value) || 0;
             const newPrice = parseFloat(document.getElementById('itemNewPrice').value) || 0;
+            const durationMinutes = parseInt(document.getElementById('itemDuration').value) || 30;
             const imgUrlInput = document.getElementById('itemImgUrl').value.trim();
             
             const finalImage = uploadedBase64Image || imgUrlInput || "";
+            const expiryTimestamp = Date.now() + (durationMinutes * 60 * 1000);
 
             const newOffer = {
                 id: String(Date.now()),
                 timestamp: new Date().toLocaleString('bn-BD'),
+                createdAt: Date.now(),
+                durationMs: durationMinutes * 60 * 1000,
+                expiryTime: expiryTimestamp,
                 name: name,
                 oldPrice: oldPrice,
                 newPrice: newPrice,
-                badge: document.getElementById('itemBadge').value.trim() || 'TODAY\'S SALE',
+                badge: document.getElementById('itemBadge').value.trim() || 'LIMITED FLASH SALE',
                 desc: document.getElementById('itemDesc').value.trim(),
                 img: finalImage
             };
@@ -677,7 +710,7 @@
             }).then(() => {
                 document.getElementById('offerForm').reset();
                 uploadedBase64Image = "";
-                alert(`✅ অফার সফলভাবে গুগল শিটে পাবলিশ করা হয়েছে!`);
+                alert(`✅ অফার ও টাইম লিমিট সফলভাবে গুগল শিটে পাবলিশ করা হয়েছে!`);
                 setTimeout(fetchOffersFromCloud, 1500);
             }).catch(err => {
                 alert("⚠️ ক্লাউডে পোস্ট করতে সমস্যা হয়েছে!");
@@ -697,7 +730,14 @@
             }
         }
 
-        function openOrderModal(productName, productPrice) {
+        function openOrderModal(productName, productPrice, offerId) {
+            // Check if expired
+            const offer = offers.find(o => o.id === offerId);
+            if (offer && offer.expiryTime && Date.now() > offer.expiryTime) {
+                alert("❌ দুঃখিত! এই অফারের সময়সীমা শেষ হয়ে গেছে।");
+                return;
+            }
+
             document.getElementById('selectedProductName').value = productName;
             document.getElementById('selectedProductPrice').value = productPrice;
             document.getElementById('modalProductName').innerHTML = `<i class="fa-solid fa-cart-shopping"></i> ${productName} (৳${productPrice})`;
@@ -719,10 +759,14 @@
             const cMember = document.getElementById('custMemberCode').value.trim() || "নাই (Non-Member)";
             const cVoucher = document.getElementById('custVoucherCode').value.trim() || "নাই (No Voucher)";
             const cNote = document.getElementById('custNote').value.trim() || "কোনো অতিরিক্ত নির্দেশ নেই";
+            
+            // Real-time Order Data Generation
+            const realTimeOrderMoment = new Date().toLocaleString('bn-BD', { timeZone: 'Asia/Dhaka' });
 
-            const message = `🌸 *সাকুরা মার্কেট - পিকআপ অর্ডার* 🌸\n` +
+            const message = `🌸 *সাকুরা মার্কেট - পিকআপ অর্ডার (রিয়েল-টাইম ডাটা)* 🌸\n` +
                 `------------------------------------\n` +
-                `দোকানে আসবো কিছুক্ষণের মধ্যে আমার জন্য এই অর্ডারগুলো রেডি করে রাখুন।\n\n` +
+                `⏱️ *অর্ডারের সঠিক সময়:* ${realTimeOrderMoment}\n` +
+                `⚠️ *শর্ত:* ১ ঘণ্টার মধ্যে দোকানে এসে সংগ্রহ করতে হবে!\n\n` +
                 `🛒 *পণ্যের নাম:* ${pName}\n` +
                 `💰 *অফার মূল্য:* ৳${pPrice}\n\n` +
                 `👤 *গ্রাহকের নাম:* ${cName}\n` +
@@ -739,6 +783,34 @@
             closeOrderModal();
         }
 
+        function updateTimersUI() {
+            const now = Date.now();
+            offers.forEach(o => {
+                if (o.expiryTime) {
+                    const timerEl = document.getElementById(`timer-${o.id}`);
+                    const btnEl = document.getElementById(`btn-order-${o.id}`);
+                    
+                    const diff = o.expiryTime - now;
+                    if (diff <= 0) {
+                        if (timerEl) timerEl.innerText = "⏰ অফার শেষ";
+                        if (timerEl) timerEl.style.color = "var(--red-text)";
+                        if (btnEl) {
+                            btnEl.innerText = "অফার শেষ (Expired)";
+                            btnEl.classList.add('expired');
+                            btnEl.removeAttribute('onclick');
+                        }
+                    } else {
+                        const totalSecs = Math.floor(diff / 1000);
+                        const mins = Math.floor(totalSecs / 60);
+                        const secs = totalSecs % 60;
+                        if (timerEl) {
+                            timerEl.innerText = `⏳ বাকি: ${mins}মি ${secs}সে`;
+                        }
+                    }
+                }
+            });
+        }
+
         function renderOffers() {
             const container = document.getElementById('offersGridContainer');
 
@@ -747,16 +819,31 @@
                 return;
             }
 
+            const now = Date.now();
+
             container.innerHTML = offers.map(o => {
                 let imgContent = o.img ? `<img src="${o.img}" alt="${o.name}">` : `<i class="fa-solid fa-tag fa-3x" style="color:var(--accent-gold);"></i>`;
                 let deleteBtnHtml = isAdminMode ? `<button class="btn-delete-item" onclick="deleteOffer('${o.id}')" style="display:block;"><i class="fa-solid fa-trash"></i></button>` : '';
 
-                // Escape quotes for safe function argument passing
                 const safeName = o.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const isExpired = o.expiryTime && now > o.expiryTime;
+                
+                let timerText = "⏳ আজীবন";
+                if (o.expiryTime) {
+                    const diff = o.expiryTime - now;
+                    if (diff <= 0) {
+                        timerText = "⏰ অফার শেষ";
+                    } else {
+                        const mins = Math.floor((diff / 1000) / 60);
+                        const secs = Math.floor((diff / 1000) % 60);
+                        timerText = `⏳ বাকি: ${mins}মি ${secs}সে`;
+                    }
+                }
 
                 return `
                     <div class="offer-poster-card">
                         <div class="poster-badge">${o.badge}</div>
+                        <div class="timer-badge" id="timer-${o.id}">${timerText}</div>
                         <div class="poster-img-box">${imgContent}</div>
                         <div class="poster-content">
                             <div class="poster-item-name">${o.name}</div>
@@ -766,8 +853,8 @@
                                 <span class="new-price">৳ ${o.newPrice}</span>
                             </div>
                             <div class="btn-card-action">
-                                <button onclick="openOrderModal('${safeName}', '${o.newPrice}')" class="btn-order">
-                                    <i class="fa-brands fa-whatsapp"></i> অর্ডার করুন
+                                <button id="btn-order-${o.id}" onclick="${isExpired ? 'void(0)' : `openOrderModal('${safeName}', '${o.newPrice}', '${o.id}')`}" class="btn-order ${isExpired ? 'expired' : ''}">
+                                    <i class="fa-brands fa-whatsapp"></i> ${isExpired ? 'অফার শেষ (Expired)' : 'অর্ডার করুন'}
                                 </button>
                                 ${deleteBtnHtml}
                             </div>
