@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সাকুরা মার্কেট অফার - দোকানে পিকআপ অর্ডার ও টাইম লিমিট</title>
+    <title>সাকুরা মার্কেট অফার - লাইভ টাইম লিমিট</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -251,7 +251,7 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.9);
             border: 1px solid var(--accent-gold);
             color: var(--accent-gold);
             padding: 3px 8px;
@@ -338,12 +338,15 @@
             cursor: pointer;
             text-align: center;
             text-decoration: none;
+            transition: all 0.2s ease;
         }
 
-        .btn-order.expired {
-            background: var(--border-color);
-            color: var(--text-muted);
-            cursor: not-allowed;
+        /* Expired Button Style */
+        .btn-order:disabled, .btn-order.expired {
+            background: #334155 !important;
+            color: #94a3b8 !important;
+            cursor: not-allowed !important;
+            opacity: 0.6;
         }
 
         .btn-delete-item {
@@ -460,7 +463,7 @@
                     <div class="brand-logo">咲</div>
                     <div>
                         <div class="brand-title">সাকুরা মার্কেট অফার</div>
-                        <div class="brand-subtitle">দোকানে পিকআপ ও রিয়েল-টাইম লিমিট</div>
+                        <div class="brand-subtitle">দোকানে পিকআপ ও লাইভ কাউন্টডাউন</div>
                     </div>
                 </div>
                 <div class="header-actions">
@@ -470,7 +473,7 @@
 
             <div class="pickup-notice">
                 <i class="fa-solid fa-triangle-exclamation"></i>
-                <span><strong>শর্ত:</strong> হোম ডেলিভারি নেই। অর্ডার করার পর অবশ্যই <strong>১ ঘণ্টার মধ্যে</strong> দোকানে এসে পণ্য সংগ্রহ করতে হবে, অন্যথায় অর্ডার স্বয়ংক্রিয়ভাবে বাতিল বলে গণ্য হবে।</span>
+                <span><strong>শর্ত:</strong> হোম ডেলিভারি নেই। অর্ডার করার পর অবশ্যই <strong>১ ঘণ্টার মধ্যে</strong> দোকানে এসে পণ্য সংগ্রহ করতে হবে, অন্যথায় অর্ডার স্বয়ংক্রিয়ভাবে বাতিল হবে।</span>
             </div>
 
             <button class="btn-install-widget" id="installWidgetBtn" onclick="installWidgetApp()">
@@ -497,9 +500,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">অফারের সময়সীমা (Minutes Duration)</label>
-                    <input type="number" id="itemDuration" class="form-control" value="30" placeholder="যেমন: 30 বা 45 মিনিট" required>
-                    <small style="color: var(--text-muted); font-size: 11px;">অ্যাডমিন হিসেবে এই অফারটি কত মিনিট পর্যন্ত কার্যকর থাকবে তা সেট করুন।</small>
+                    <label class="form-label">অফারের সময়সীমা (Minutes)</label>
+                    <input type="number" id="itemDuration" class="form-control" value="30" placeholder="কত মিনিট ছাড় থাকবে? (যেমন: 30, 60)" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">ছাড়ের ব্যাজ (Tag)</label>
@@ -510,7 +512,7 @@
                     <input type="text" id="itemDesc" class="form-control" placeholder="সীমিত সময়ের জন্য বিশেষ ছাড়।">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">পণ্যের ছবি (Image URL অথবা পিসি থেকে ব্রাউজ করুন)</label>
+                    <label class="form-label">পণ্যের ছবি (Image URL অথবা ব্রাউজ করুন)</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="url" id="itemImgUrl" class="form-control" placeholder="https://image-link.com" style="flex: 2;">
                         <input type="file" id="itemImgFile" accept="image/*" class="form-control" style="flex: 1; padding: 6px; font-size: 11px;" onchange="previewLocalImage(event)">
@@ -530,7 +532,7 @@
         </div>
 
         <div class="footer-credit">
-            © SAKURA MARKET OFFERS • SYLHET • 1-HOUR PICKUP POLICY
+            © SAKURA MARKET OFFERS • SYLHET • STORE PICKUP ONLY
         </div>
     </div>
 
@@ -556,13 +558,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">মেম্বারশিপ কোড/আইডি <span class="optional-badge">ঐচ্ছিক (Optional)</span></label>
-                    <input type="text" id="custMemberCode" class="form-control" placeholder="যেমন: SKR-2026-1001 (থাকলে দিন)">
+                    <label class="form-label">মেম্বারশিপ কোড/আইডি <span class="optional-badge">ঐচ্ছিক</span></label>
+                    <input type="text" id="custMemberCode" class="form-control" placeholder="যেমন: SKR-2026-1001">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">ভাউচার কোড <span class="optional-badge">ঐচ্ছিক (Optional)</span></label>
-                    <input type="text" id="custVoucherCode" class="form-control" placeholder="যেমন: SAKURA-50000 (থাকলে দিন)">
+                    <label class="form-label">ভাউচার কোড <span class="optional-badge">ঐচ্ছিক</span></label>
+                    <input type="text" id="custVoucherCode" class="form-control" placeholder="যেমন: SAKURA-50000">
                 </div>
 
                 <div class="form-group">
@@ -571,14 +573,14 @@
                 </div>
 
                 <button type="submit" class="btn-whatsapp-send">
-                    <i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপে অর্ডার পাঠান (রিয়েল-টাইম ডাটা সহ)
+                    <i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপে অর্ডার পাঠান
                 </button>
             </form>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyVYdnXMuAxUTXMikMY0xwA69hISffHOH-s4zQoPKrRR2ymQ8fXD-RxS5N3VETo7_i1/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPukeTpE8t96oiRQ1PRtqXpf6iDKaezyO3suOnru_Nl6JYKrcmaRUT7JLEEYCiizrn/exec";
         const SHOP_WHATSAPP_NUMBER = "8801789504376";
 
         if ('serviceWorker' in navigator) {
@@ -597,9 +599,7 @@
         function installWidgetApp() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    deferredPrompt = null;
-                });
+                deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
             } else {
                 alert("📱 উইজেট সেভ করতে ব্রাউজারের মেনু থেকে 'Add to Home Screen' সিলেক্ট করুন!");
             }
@@ -612,9 +612,8 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchOffersFromCloud();
-            setInterval(fetchOffersFromCloud, 30000);
-            // Update countdown timers every second
-            setInterval(updateTimersUI, 1000);
+            setInterval(fetchOffersFromCloud, 30000); // 30s auto fetch
+            setInterval(updateTimersUI, 1000); // 1s live countdown
         });
 
         function previewLocalImage(event) {
@@ -632,7 +631,6 @@
                         
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        
                         uploadedBase64Image = canvas.toDataURL('image/jpeg', 0.8);
                     };
                     img.src = e.target.result;
@@ -686,13 +684,14 @@
             const imgUrlInput = document.getElementById('itemImgUrl').value.trim();
             
             const finalImage = uploadedBase64Image || imgUrlInput || "";
-            const expiryTimestamp = Date.now() + (durationMinutes * 60 * 1000);
+            const now = Date.now();
+            const expiryTimestamp = now + (durationMinutes * 60 * 1000);
 
             const newOffer = {
-                id: String(Date.now()),
+                id: String(now),
                 timestamp: new Date().toLocaleString('bn-BD'),
-                createdAt: Date.now(),
-                durationMs: durationMinutes * 60 * 1000,
+                createdAt: now,
+                durationMinutes: durationMinutes,
                 expiryTime: expiryTimestamp,
                 name: name,
                 oldPrice: oldPrice,
@@ -710,7 +709,7 @@
             }).then(() => {
                 document.getElementById('offerForm').reset();
                 uploadedBase64Image = "";
-                alert(`✅ অফার ও টাইম লিমিট সফলভাবে গুগল শিটে পাবলিশ করা হয়েছে!`);
+                alert(`✅ অফার পাবলিশ করা হয়েছে! (${durationMinutes} মিনিটের কাউন্টডাউন শুরু)`);
                 setTimeout(fetchOffersFromCloud, 1500);
             }).catch(err => {
                 alert("⚠️ ক্লাউডে পোস্ট করতে সমস্যা হয়েছে!");
@@ -730,10 +729,8 @@
             }
         }
 
-        function openOrderModal(productName, productPrice, offerId) {
-            // Check if expired
-            const offer = offers.find(o => o.id === offerId);
-            if (offer && offer.expiryTime && Date.now() > offer.expiryTime) {
+        function openOrderModal(productName, productPrice, expiryTime) {
+            if (expiryTime && Date.now() > Number(expiryTime)) {
                 alert("❌ দুঃখিত! এই অফারের সময়সীমা শেষ হয়ে গেছে।");
                 return;
             }
@@ -756,29 +753,25 @@
             const pPrice = document.getElementById('selectedProductPrice').value;
             const cName = document.getElementById('custName').value.trim();
             const cPhone = document.getElementById('custPhone').value.trim();
-            const cMember = document.getElementById('custMemberCode').value.trim() || "নাই (Non-Member)";
-            const cVoucher = document.getElementById('custVoucherCode').value.trim() || "নাই (No Voucher)";
-            const cNote = document.getElementById('custNote').value.trim() || "কোনো অতিরিক্ত নির্দেশ নেই";
-            
-            // Real-time Order Data Generation
-            const realTimeOrderMoment = new Date().toLocaleString('bn-BD', { timeZone: 'Asia/Dhaka' });
+            const cMember = document.getElementById('custMemberCode').value.trim() || "নাই";
+            const cVoucher = document.getElementById('custVoucherCode').value.trim() || "নাই";
+            const cNote = document.getElementById('custNote').value.trim() || "কোনো বিশেষ নির্দেশ নেই";
+            const orderTime = new Date().toLocaleString('bn-BD', { timeZone: 'Asia/Dhaka' });
 
-            const message = `🌸 *সাকুরা মার্কেট - পিকআপ অর্ডার (রিয়েল-টাইম ডাটা)* 🌸\n` +
+            const message = `🌸 *সাকুরা মার্কেট - পিকআপ অর্ডার* 🌸\n` +
                 `------------------------------------\n` +
-                `⏱️ *অর্ডারের সঠিক সময়:* ${realTimeOrderMoment}\n` +
-                `⚠️ *শর্ত:* ১ ঘণ্টার মধ্যে দোকানে এসে সংগ্রহ করতে হবে!\n\n` +
-                `🛒 *পণ্যের নাম:* ${pName}\n` +
-                `💰 *অফার মূল্য:* ৳${pPrice}\n\n` +
-                `👤 *গ্রাহকের নাম:* ${cName}\n` +
-                `📞 *ফোন নম্বর:* ${cPhone}\n` +
-                `💳 *মেম্বারশিপ কোড:* ${cMember}\n` +
+                `⏱️ *অর্ডারের সময়:* ${orderTime}\n` +
+                `⚠️ *শর্ত:* ১ ঘণ্টার মধ্যে দোকানে এসে সংগ্ৰহ করতে হবে।\n\n` +
+                `🛒 *পণ্য:* ${pName}\n` +
+                `💰 *দাম:* ৳${pPrice}\n\n` +
+                `👤 *নাম:* ${cName}\n` +
+                `📞 *ফোন:* ${cPhone}\n` +
+                `💳 *মেম্বারশিপ ID:* ${cMember}\n` +
                 `🎟️ *ভাউচার কোড:* ${cVoucher}\n` +
                 `📝 *নোট:* ${cNote}\n` +
                 `------------------------------------`;
 
-            const encodedMsg = encodeURIComponent(message);
-            const waUrl = `https://wa.me/${SHOP_WHATSAPP_NUMBER}?text=${encodedMsg}`;
-
+            const waUrl = `https://wa.me/${SHOP_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
             window.open(waUrl, '_blank');
             closeOrderModal();
         }
@@ -786,27 +779,40 @@
         function updateTimersUI() {
             const now = Date.now();
             offers.forEach(o => {
-                if (o.expiryTime) {
-                    const timerEl = document.getElementById(`timer-${o.id}`);
-                    const btnEl = document.getElementById(`btn-order-${o.id}`);
-                    
-                    const diff = o.expiryTime - now;
+                const timerEl = document.getElementById(`timer-${o.id}`);
+                const btnEl = document.getElementById(`btn-order-${o.id}`);
+
+                // fallback mechanism if Google Sheet doesn't return expiryTime
+                let expiry = Number(o.expiryTime);
+                if (!expiry && o.createdAt && o.durationMinutes) {
+                    expiry = Number(o.createdAt) + (Number(o.durationMinutes) * 60 * 1000);
+                }
+
+                if (expiry) {
+                    const diff = expiry - now;
                     if (diff <= 0) {
-                        if (timerEl) timerEl.innerText = "⏰ অফার শেষ";
-                        if (timerEl) timerEl.style.color = "var(--red-text)";
-                        if (btnEl) {
-                            btnEl.innerText = "অফার শেষ (Expired)";
+                        if (timerEl) {
+                            timerEl.innerText = "⏰ অফার শেষ";
+                            timerEl.style.color = "var(--red-text)";
+                            timerEl.style.borderColor = "var(--red-text)";
+                        }
+                        if (btnEl && !btnEl.disabled) {
+                            btnEl.disabled = true;
                             btnEl.classList.add('expired');
-                            btnEl.removeAttribute('onclick');
+                            btnEl.innerHTML = `<i class="fa-solid fa-lock"></i> অফার শেষ (Expired)`;
                         }
                     } else {
                         const totalSecs = Math.floor(diff / 1000);
                         const mins = Math.floor(totalSecs / 60);
                         const secs = totalSecs % 60;
                         if (timerEl) {
-                            timerEl.innerText = `⏳ বাকি: ${mins}মি ${secs}সে`;
+                            timerEl.innerText = `⏳ বাকি: ${mins}মি ${secs < 10 ? '0' : ''}${secs}সে`;
+                            timerEl.style.color = "var(--accent-gold)";
                         }
                     }
+                } else if (timerEl) {
+                    // Default fallback if time is missing
+                    timerEl.innerText = "⏳ ৩০ মিনিট";
                 }
             });
         }
@@ -815,7 +821,7 @@
             const container = document.getElementById('offersGridContainer');
 
             if (offers.length === 0) {
-                container.innerHTML = `<div class="no-offers"><i class="fa-solid fa-box-open fa-2x" style="margin-bottom:8px;"></i><br>বর্তমানে গুগল শিটে কোনো অফার নেই।</div>`;
+                container.innerHTML = `<div class="no-offers"><i class="fa-solid fa-box-open fa-2x" style="margin-bottom:8px;"></i><br>বর্তমানে ক্লাউডে কোনো অফার নেই।</div>`;
                 return;
             }
 
@@ -826,24 +832,18 @@
                 let deleteBtnHtml = isAdminMode ? `<button class="btn-delete-item" onclick="deleteOffer('${o.id}')" style="display:block;"><i class="fa-solid fa-trash"></i></button>` : '';
 
                 const safeName = o.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                const isExpired = o.expiryTime && now > o.expiryTime;
                 
-                let timerText = "⏳ আজীবন";
-                if (o.expiryTime) {
-                    const diff = o.expiryTime - now;
-                    if (diff <= 0) {
-                        timerText = "⏰ অফার শেষ";
-                    } else {
-                        const mins = Math.floor((diff / 1000) / 60);
-                        const secs = Math.floor((diff / 1000) % 60);
-                        timerText = `⏳ বাকি: ${mins}মি ${secs}সে`;
-                    }
+                let expiry = Number(o.expiryTime);
+                if (!expiry && o.createdAt && o.durationMinutes) {
+                    expiry = Number(o.createdAt) + (Number(o.durationMinutes) * 60 * 1000);
                 }
+
+                const isExpired = expiry ? (now > expiry) : false;
 
                 return `
                     <div class="offer-poster-card">
-                        <div class="poster-badge">${o.badge}</div>
-                        <div class="timer-badge" id="timer-${o.id}">${timerText}</div>
+                        <div class="poster-badge">${o.badge || 'FLASH SALE'}</div>
+                        <div class="timer-badge" id="timer-${o.id}">ক্যালকুলেট হচ্ছে...</div>
                         <div class="poster-img-box">${imgContent}</div>
                         <div class="poster-content">
                             <div class="poster-item-name">${o.name}</div>
@@ -853,8 +853,12 @@
                                 <span class="new-price">৳ ${o.newPrice}</span>
                             </div>
                             <div class="btn-card-action">
-                                <button id="btn-order-${o.id}" onclick="${isExpired ? 'void(0)' : `openOrderModal('${safeName}', '${o.newPrice}', '${o.id}')`}" class="btn-order ${isExpired ? 'expired' : ''}">
-                                    <i class="fa-brands fa-whatsapp"></i> ${isExpired ? 'অফার শেষ (Expired)' : 'অর্ডার করুন'}
+                                <button id="btn-order-${o.id}" 
+                                        ${isExpired ? 'disabled' : ''} 
+                                        onclick="openOrderModal('${safeName}', '${o.newPrice}', '${expiry}')" 
+                                        class="btn-order ${isExpired ? 'expired' : ''}">
+                                    <i class="fa-solid ${isExpired ? 'fa-lock' : 'fa-brands fa-whatsapp'}"></i> 
+                                    ${isExpired ? 'অফার শেষ (Expired)' : 'অর্ডার করুন'}
                                 </button>
                                 ${deleteBtnHtml}
                             </div>
@@ -862,6 +866,9 @@
                     </div>
                 `;
             }).join('');
+
+            // Call timer update immediately after render
+            updateTimersUI();
         }
     </script>
 </body>
