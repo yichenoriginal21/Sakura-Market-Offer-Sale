@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সাকুরা মার্কেট অফার - স্পেশাল ডিসকাউন্ট ও সেল</title>
+    <title>সাকুরা মার্কেট অফার - ক্লাউড সিঙ্কড সেল</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -104,7 +104,6 @@
             font-weight: bold;
         }
 
-        /* 📱 SAVE AS WIDGET BUTTON */
         .btn-install-widget {
             width: 100%;
             background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
@@ -120,10 +119,6 @@
             justify-content: center;
             gap: 8px;
             box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
-            transition: transform 0.1s;
-        }
-        .btn-install-widget:active {
-            transform: scale(0.98);
         }
 
         .admin-panel {
@@ -193,7 +188,7 @@
             margin-bottom: 14px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
             color: var(--text-main);
             border-bottom: 2px dashed var(--border-color);
             padding-bottom: 8px;
@@ -244,13 +239,6 @@
             align-items: center;
             justify-content: center;
             color: var(--text-muted);
-            overflow: hidden;
-        }
-
-        .poster-img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
 
         .poster-content {
@@ -344,29 +332,26 @@
 <body>
 
     <div class="portal-container">
-        <!-- Header -->
         <header class="app-header">
             <div class="header-top">
                 <div class="brand">
                     <div class="brand-logo">咲</div>
                     <div>
                         <div class="brand-title">সাকুরা মার্কেট অফার</div>
-                        <div class="brand-subtitle">স্পেশাল ডিসকাউন্ট ও সেল</div>
+                        <div class="brand-subtitle">গুগল শিট ক্লাউড সিঙ্কড</div>
                     </div>
                 </div>
                 <div class="header-actions">
                     <button class="btn-action" onclick="requestAdminAccess()"><i class="fa-solid fa-lock"></i> অ্যাডমিন</button>
                 </div>
             </div>
-            <!-- Save as Widget Button -->
             <button class="btn-install-widget" id="installWidgetBtn" onclick="installWidgetApp()">
                 <i class="fa-solid fa-mobile-screen-button"></i> মোবাইল স্ক্রিনে উইজেট হিসেবে সেভ করুন
             </button>
         </header>
 
-        <!-- Admin Control Panel -->
         <div class="admin-panel" id="adminPanel">
-            <div class="panel-title"><i class="fa-solid fa-plus-circle"></i> নতুন অফার পোস্টার ও নোটিফিকেশন পাবলিশ করুন</div>
+            <div class="panel-title"><i class="fa-solid fa-cloud-arrow-up"></i> ক্লাউড অফার পাবলিশ করুন (গুগল শিট)</div>
             <form id="offerForm" onsubmit="handleAddOffer(event)">
                 <div class="form-group">
                     <label class="form-label">পণ্যের নাম (Item Name)</label>
@@ -387,30 +372,31 @@
                     <input type="text" id="itemBadge" class="form-control" value="TODAY'S SALE">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">ছবির লিংক (Image URL - Optional)</label>
-                    <input type="url" id="itemImg" class="form-control" placeholder="https://...">
-                </div>
-                <div class="form-group">
                     <label class="form-label">বিবরণ (Description)</label>
                     <input type="text" id="itemDesc" class="form-control" placeholder="সীমিত সময়ের জন্য বিশেষ ছাড়।">
                 </div>
-                <button type="submit" class="btn-submit"><i class="fa-solid fa-bell"></i> পাবলিশ ও নোটিফিকেশন পাঠান</button>
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-cloud"></i> গুগল শিটে সেভ ও নোটিফিকেশন পাঠান</button>
             </form>
         </div>
 
-        <!-- Offers List Section -->
         <div class="offers-section-title">
-            <i class="fa-solid fa-fire" style="color: var(--accent-gold);"></i> আজকের আকর্ষণীয় সেল ও ডিসকাউন্ট অফার
+            <span><i class="fa-solid fa-fire" style="color: var(--accent-gold);"></i> ক্লাউড লাইভ অফার লিস্ট</span>
+            <span id="syncIndicator" style="font-size: 11px; color: var(--green-text);">🟢 সিঙ্কড</span>
         </div>
 
-        <div class="offers-grid" id="offersGridContainer"></div>
+        <div class="offers-grid" id="offersGridContainer">
+            <div class="no-offers">গুগল শিট থেকে ডাটা লোড হচ্ছে...</div>
+        </div>
 
         <div class="footer-credit">
-            © SAKURA MARKET OFFERS • SYLHET • HOSTED VIA GITHUB PAGES
+            © SAKURA MARKET OFFERS • SYLHET • GOOGLE SHEETS CLOUD
         </div>
     </div>
 
     <script>
+        // ⚠️ REPLACE WITH YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZeGSFXtENB8ZmoChTyi64rpt3kwJ269govScgAJxDE6_HgZbji-b-bhwT-J_X_S0X/exec";
+
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed', err));
         }
@@ -428,35 +414,21 @@
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                    }
                     deferredPrompt = null;
                 });
             } else {
-                alert("📱 উইজেট সেভ করতে ব্রাউজারের মেনু (⋮ বা Share) থেকে 'Add to Home Screen' সিলেক্ট করুন!");
+                alert("📱 উইজেট সেভ করতে ব্রাউজারের মেনু থেকে 'Add to Home Screen' সিলেক্ট করুন!");
             }
         }
 
         const ADMIN_PASS = "28282805";
-
-        const defaultOffers = [
-            {
-                id: '1',
-                name: 'জাপানি প্রিমিয়াম গ্রিন টি',
-                oldPrice: 200,
-                newPrice: 190,
-                badge: 'SPECIAL SALE',
-                img: '',
-                desc: 'আজকের বিশেষ ডিসকাউন্টে সীমিত সময়ের অফার।'
-            }
-        ];
-
-        let offers = JSON.parse(localStorage.getItem('sakura_market_offers')) || defaultOffers;
+        let offers = [];
         let isAdminMode = false;
 
         document.addEventListener('DOMContentLoaded', () => {
-            renderOffers();
+            fetchOffersFromCloud();
+            // Auto refresh every 30 seconds to get new sales from Google Sheets on all devices
+            setInterval(fetchOffersFromCloud, 30000);
         });
 
         function playJapaneseChime() {
@@ -479,6 +451,22 @@
             } catch (e) {
                 console.log("Audio locked", e);
             }
+        }
+
+        function fetchOffersFromCloud() {
+            if (!SCRIPT_URL || SCRIPT_URL.includes("YOUR_APPS")) return;
+            
+            fetch(SCRIPT_URL + "?action=getOffers")
+                .then(res => res.json())
+                .then(data => {
+                    offers = data || [];
+                    renderOffers();
+                    document.getElementById('syncIndicator').innerText = "🟢 লাইভ সিঙ্কড";
+                })
+                .catch(err => {
+                    console.error("Cloud fetch error", err);
+                    document.getElementById('syncIndicator').innerText = "🔴 অফলাইন";
+                });
         }
 
         function requestAdminAccess() {
@@ -509,30 +497,40 @@
 
             const newOffer = {
                 id: String(Date.now()),
+                timestamp: new Date().toLocaleString('bn-BD'),
                 name: name,
                 oldPrice: oldPrice,
                 newPrice: newPrice,
                 badge: document.getElementById('itemBadge').value.trim() || 'TODAY\'S SALE',
-                img: document.getElementById('itemImg').value.trim(),
                 desc: document.getElementById('itemDesc').value.trim()
             };
 
-            offers.unshift(newOffer);
-            localStorage.setItem('sakura_market_offers', JSON.stringify(offers));
-
-            document.getElementById('offerForm').reset();
-            document.getElementById('itemBadge').value = "TODAY'S SALE";
-
-            renderOffers();
-            playJapaneseChime();
-            alert(`🌸 নতুন সেল নোটিফিকেশন!\n\n${name} এখন অফার মূল্যে বিক্রি হচ্ছে!\nপূর্বের দাম: ৳${oldPrice} ➔ নতুন দাম: ৳${newPrice}`);
+            // Send to Google Sheets via POST
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...newOffer, action: 'add' })
+            }).then(() => {
+                playJapaneseChime();
+                alert(`🌸 গুগল শিটে পাবলিশ হয়েছে!\n\n${name}\nপূর্বের দাম: ৳${oldPrice} ➔ নতুন দাম: ৳${newPrice}`);
+                document.getElementById('offerForm').reset();
+                setTimeout(fetchOffersFromCloud, 1500);
+            }).catch(err => {
+                alert("⚠️ ক্লাউডে পাঠাতে সমস্যা হয়েছে!");
+            });
         }
 
         function deleteOffer(id) {
-            if (confirm('⚠️ অফারটি মুছে ফেলতে চান?')) {
-                offers = offers.filter(o => o.id !== String(id));
-                localStorage.setItem('sakura_market_offers', JSON.stringify(offers));
-                renderOffers();
+            if (confirm('⚠️ গুগল শিট থেকে অফারটি মুছে ফেলতে চান?')) {
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id, action: 'delete' })
+                }).then(() => {
+                    setTimeout(fetchOffersFromCloud, 1500);
+                });
             }
         }
 
@@ -540,18 +538,17 @@
             const container = document.getElementById('offersGridContainer');
 
             if (offers.length === 0) {
-                container.innerHTML = `<div class="no-offers"><i class="fa-solid fa-box-open fa-2x" style="margin-bottom:8px;"></i><br>বর্তমানে কোনো স্পেশাল অফার বা সেল নেই।</div>`;
+                container.innerHTML = `<div class="no-offers"><i class="fa-solid fa-box-open fa-2x" style="margin-bottom:8px;"></i><br>বর্তমানে গুগল শিটে কোনো অফার নেই।</div>`;
                 return;
             }
 
             container.innerHTML = offers.map(o => {
-                let imgContent = o.img ? `<img src="${o.img}" alt="${o.name}">` : `<i class="fa-solid fa-tag fa-3x"></i>`;
                 let deleteBtnHtml = isAdminMode ? `<button class="btn-delete-item" onclick="deleteOffer('${o.id}')" style="display:block;"><i class="fa-solid fa-trash"></i></button>` : '';
 
                 return `
                     <div class="offer-poster-card">
                         <div class="poster-badge">${o.badge}</div>
-                        <div class="poster-img-box">${imgContent}</div>
+                        <div class="poster-img-box"><i class="fa-solid fa-tag fa-3x" style="color:var(--accent-gold);"></i></div>
                         <div class="poster-content">
                             <div class="poster-item-name">${o.name}</div>
                             <div class="poster-desc">${o.desc || ''}</div>
