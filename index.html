@@ -44,48 +44,53 @@
             background: linear-gradient(135deg, #2d0c15 0%, #1e293b 100%);
             border: 1px solid var(--accent-pink);
             border-radius: 16px;
-            padding: 18px 20px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(225, 29, 72, 0.2);
+        }
+
+        .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(225, 29, 72, 0.2);
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .brand-logo {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             background: var(--accent-pink);
             color: #fff;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
         }
 
         .brand-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
             color: #ffffff;
         }
 
         .brand-subtitle {
-            font-size: 11px;
+            font-size: 10.5px;
             color: var(--accent-gold);
-            letter-spacing: 0.5px;
         }
 
         .header-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn-action {
@@ -97,6 +102,28 @@
             cursor: pointer;
             font-size: 11px;
             font-weight: bold;
+        }
+
+        /* 📱 SAVE AS WIDGET BUTTON */
+        .btn-install-widget {
+            width: 100%;
+            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
+            transition: transform 0.1s;
+        }
+        .btn-install-widget:active {
+            transform: scale(0.98);
         }
 
         .admin-panel {
@@ -319,16 +346,22 @@
     <div class="portal-container">
         <!-- Header -->
         <header class="app-header">
-            <div class="brand">
-                <div class="brand-logo">咲</div>
-                <div>
-                    <div class="brand-title">সাকুরা মার্কেট অফার</div>
-                    <div class="brand-subtitle">আজকের স্পেশাল ডিসকাউন্ট ও সেল পোস্টার</div>
+            <div class="header-top">
+                <div class="brand">
+                    <div class="brand-logo">咲</div>
+                    <div>
+                        <div class="brand-title">সাকুরা মার্কেট অফার</div>
+                        <div class="brand-subtitle">স্পেশাল ডিসকাউন্ট ও সেল</div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-action" onclick="requestAdminAccess()"><i class="fa-solid fa-lock"></i> অ্যাডমিন</button>
                 </div>
             </div>
-            <div class="header-actions">
-                <button class="btn-action" onclick="requestAdminAccess()"><i class="fa-solid fa-lock"></i> অ্যাডমিন</button>
-            </div>
+            <!-- Save as Widget Button -->
+            <button class="btn-install-widget" id="installWidgetBtn" onclick="installWidgetApp()">
+                <i class="fa-solid fa-mobile-screen-button"></i> মোবাইল স্ক্রিনে উইজেট হিসেবে সেভ করুন
+            </button>
         </header>
 
         <!-- Admin Control Panel -->
@@ -382,6 +415,29 @@
             navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed', err));
         }
 
+        let deferredPrompt;
+        const installBtn = document.getElementById('installWidgetBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+        });
+
+        function installWidgetApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                alert("📱 উইজেট সেভ করতে ব্রাউজারের মেনু (⋮ বা Share) থেকে 'Add to Home Screen' সিলেক্ট করুন!");
+            }
+        }
+
         const ADMIN_PASS = "28282805";
 
         const defaultOffers = [
@@ -403,32 +459,25 @@
             renderOffers();
         });
 
-        // 🌸 Custom Japanese Notification Chime using Web Audio API
         function playJapaneseChime() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                
-                // Play a pleasant two-tone Japanese konbini / anime chime (G5 to C6)
                 const playTone = (freq, startTime, duration) => {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
                     osc.type = 'sine';
                     osc.frequency.value = freq;
-                    
                     gain.gain.setValueAtTime(0.15, audioCtx.currentTime + startTime);
                     gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + startTime + duration);
-                    
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
-                    
                     osc.start(audioCtx.currentTime + startTime);
                     osc.stop(audioCtx.currentTime + startTime + duration);
                 };
-
-                playTone(783.99, 0.0, 0.25); // G5
-                playTone(1046.50, 0.2, 0.4);  // C6
+                playTone(783.99, 0.0, 0.25);
+                playTone(1046.50, 0.2, 0.4);
             } catch (e) {
-                console.log("Audio not supported or blocked until interaction", e);
+                console.log("Audio locked", e);
             }
         }
 
@@ -463,7 +512,7 @@
                 name: name,
                 oldPrice: oldPrice,
                 newPrice: newPrice,
-                badge: document.getElementById('itemBadge').value.trim() || 'SALE',
+                badge: document.getElementById('itemBadge').value.trim() || 'TODAY\'S SALE',
                 img: document.getElementById('itemImg').value.trim(),
                 desc: document.getElementById('itemDesc').value.trim()
             };
@@ -475,8 +524,6 @@
             document.getElementById('itemBadge').value = "TODAY'S SALE";
 
             renderOffers();
-
-            // Play Japanese Chime & trigger notification popup
             playJapaneseChime();
             alert(`🌸 নতুন সেল নোটিফিকেশন!\n\n${name} এখন অফার মূল্যে বিক্রি হচ্ছে!\nপূর্বের দাম: ৳${oldPrice} ➔ নতুন দাম: ৳${newPrice}`);
         }
