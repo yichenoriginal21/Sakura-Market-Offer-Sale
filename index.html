@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সাকুরা মার্কেট অফার - শপিং কার্ট ও লাইভ কাউন্টডাউন</title>
+    <title>সাকুরা মার্কেট অফার - লাইভ টাইম লিমিট</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -33,7 +33,6 @@
             color: var(--text-main);
             padding: 16px;
             min-height: 100vh;
-            padding-bottom: 90px;
         }
 
         .portal-container {
@@ -327,7 +326,7 @@
             gap: 6px;
         }
 
-        .btn-add-cart {
+        .btn-order {
             flex: 1;
             background: var(--accent-pink);
             color: #fff;
@@ -338,14 +337,12 @@
             font-weight: bold;
             cursor: pointer;
             text-align: center;
+            text-decoration: none;
             transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
         }
 
-        .btn-add-cart:disabled, .btn-add-cart.expired {
+        /* Expired Button Style */
+        .btn-order:disabled, .btn-order.expired {
             background: #334155 !important;
             color: #94a3b8 !important;
             cursor: not-allowed !important;
@@ -353,7 +350,6 @@
         }
 
         .btn-delete-item {
-            width: 100%;
             background: #dc2626;
             color: white;
             border: none;
@@ -361,11 +357,7 @@
             border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
+            display: none;
         }
 
         .no-offers {
@@ -378,53 +370,7 @@
             border: 1px dashed var(--border-color);
         }
 
-        /* Floating Cart Bar */
-        .floating-cart-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(15, 23, 42, 0.95);
-            border-top: 1px solid var(--accent-pink);
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 900;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
-        }
-
-        .cart-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .cart-badge-count {
-            background: var(--accent-pink);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-        }
-
-        .btn-open-cart {
-            background: var(--accent-gold);
-            color: #0f172a;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Modal / Cart Drawer Styles */
+        /* Modal Styles */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -432,7 +378,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.75);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -444,9 +390,7 @@
             border: 1px solid var(--accent-pink);
             border-radius: 16px;
             width: 100%;
-            max-width: 480px;
-            max-height: 90vh;
-            overflow-y: auto;
+            max-width: 450px;
             padding: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
@@ -472,57 +416,6 @@
             color: var(--text-muted);
             font-size: 18px;
             cursor: pointer;
-        }
-
-        .cart-items-list {
-            max-height: 200px;
-            overflow-y: auto;
-            margin-bottom: 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 8px;
-        }
-
-        .cart-item-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 4px;
-            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
-            font-size: 13px;
-        }
-
-        .cart-item-row:last-child {
-            border-bottom: none;
-        }
-
-        .cart-item-controls {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-qty {
-            background: var(--border-color);
-            color: white;
-            border: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .cart-total-box {
-            display: flex;
-            justify-content: space-between;
-            font-size: 15px;
-            font-weight: bold;
-            margin-bottom: 14px;
-            padding: 10px;
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 8px;
-            color: var(--green-text);
         }
 
         .optional-badge {
@@ -570,7 +463,7 @@
                     <div class="brand-logo">咲</div>
                     <div>
                         <div class="brand-title">সাকুরা মার্কেট অফার</div>
-                        <div class="brand-subtitle">শপিং কার্ট ও লাইভ কাউন্টডাউন</div>
+                        <div class="brand-subtitle">দোকানে পিকআপ ও লাইভ কাউন্টডাউন</div>
                     </div>
                 </div>
                 <div class="header-actions">
@@ -580,7 +473,7 @@
 
             <div class="pickup-notice">
                 <i class="fa-solid fa-triangle-exclamation"></i>
-                <span><strong>শর্ত:</strong> হোম ডেলিভারি নেই। অর্ডার করার পর অবশ্যই <strong>১ ঘণ্টার মধ্যে</strong> দোকানে এসে সংগ্রহ করতে হবে।</span>
+                <span><strong>শর্ত:</strong> হোম ডেলিভারি নেই। অর্ডার করার পর অবশ্যই <strong>১ ঘণ্টার মধ্যে</strong> দোকানে এসে পণ্য সংগ্রহ করতে হবে, অন্যথায় অর্ডার স্বয়ংক্রিয়ভাবে বাতিল হবে।</span>
             </div>
 
             <button class="btn-install-widget" id="installWidgetBtn" onclick="installWidgetApp()">
@@ -608,7 +501,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">অফারের সময়সীমা (Minutes)</label>
-                    <input type="number" id="itemDuration" class="form-control" value="30" placeholder="কত মিনিট ছাড় থাকবে?" required>
+                    <input type="number" id="itemDuration" class="form-control" value="30" placeholder="কত মিনিট ছাড় থাকবে? (যেমন: 30, 60)" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">ছাড়ের ব্যাজ (Tag)</label>
@@ -643,35 +536,17 @@
         </div>
     </div>
 
-    <!-- Floating Cart Bar -->
-    <div class="floating-cart-bar" id="floatingCartBar" style="display: none;">
-        <div class="cart-info">
-            <i class="fa-solid fa-cart-shopping" style="color: var(--accent-gold); font-size: 18px;"></i>
-            <span>কার্ট: <span class="cart-badge-count" id="cartCount">0</span> টি আইটেম</span>
-        </div>
-        <button class="btn-open-cart" onclick="openCartModal()">
-            <i class="fa-solid fa-bag-shopping"></i> কার্ট দেখুন ও অর্ডার করুন
-        </button>
-    </div>
-
-    <!-- Cart & Checkout Modal -->
-    <div class="modal-overlay" id="cartModal">
+    <!-- Order Details Modal -->
+    <div class="modal-overlay" id="orderModal">
         <div class="modal-card">
             <div class="modal-header">
-                <div class="modal-title"><i class="fa-solid fa-cart-shopping"></i> আপনার শপিং কার্ট ও অর্ডার ফর্ম</div>
-                <button class="btn-close-modal" onclick="closeCartModal()"><i class="fa-solid fa-xmark"></i></button>
+                <div class="modal-title" id="modalProductName"><i class="fa-solid fa-cart-shopping"></i> অর্ডার ডিটেইলস</div>
+                <button class="btn-close-modal" onclick="closeOrderModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
+            <form id="whatsappOrderForm" onsubmit="submitWhatsAppOrder(event)">
+                <input type="hidden" id="selectedProductName">
+                <input type="hidden" id="selectedProductPrice">
 
-            <div class="cart-items-list" id="cartItemsContainer">
-                <!-- Cart items rendered dynamically -->
-            </div>
-
-            <div class="cart-total-box">
-                <span>মোট বিল (Total):</span>
-                <span id="cartTotalPrice">৳ 0</span>
-            </div>
-
-            <form id="whatsappOrderForm" onsubmit="submitWhatsAppCartOrder(event)">
                 <div class="form-group">
                     <label class="form-label">আপনার নাম (Customer Name) *</label>
                     <input type="text" id="custName" class="form-control" placeholder="আপনার পুরো নাম লিখুন" required>
@@ -693,19 +568,19 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">অতিরিক্ত কোনো নোট <span class="optional-badge">ঐচ্ছিক</span></label>
+                    <label class="form-label">অতিরিক্ত কোনো নোট/পরিমাণ <span class="optional-badge">ঐচ্ছিক</span></label>
                     <input type="text" id="custNote" class="form-control" placeholder="যেমন: ১ ঘণ্টার মধ্যে আসছি">
                 </div>
 
                 <button type="submit" class="btn-whatsapp-send">
-                    <i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপে একসাথে সব অর্ডার পাঠান
+                    <i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপে অর্ডার পাঠান
                 </button>
             </form>
         </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyVYdnXMuAxUTXMikMY0xwA69hISffHOH-s4zQoPKrRR2ymQ8fXD-RxS5N3VETo7_i1/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPukeTpE8t96oiRQ1PRtqXpf6iDKaezyO3suOnru_Nl6JYKrcmaRUT7JLEEYCiizrn/exec";
         const SHOP_WHATSAPP_NUMBER = "8801789504376";
 
         if ('serviceWorker' in navigator) {
@@ -732,14 +607,13 @@
 
         const ADMIN_PASS = "28282805";
         let offers = [];
-        let cart = []; 
         let isAdminMode = false;
         let uploadedBase64Image = "";
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchOffersFromCloud();
-            setInterval(fetchOffersFromCloud, 30000);
-            setInterval(updateTimersUI, 1000);
+            setInterval(fetchOffersFromCloud, 30000); // 30s auto fetch
+            setInterval(updateTimersUI, 1000); // 1s live countdown
         });
 
         function previewLocalImage(event) {
@@ -786,7 +660,6 @@
                 isAdminMode = false;
                 document.getElementById('adminPanel').style.display = 'none';
                 renderOffers();
-                alert('🔒 অ্যাডমিন মোড লক করা হয়েছে।');
                 return;
             }
 
@@ -795,7 +668,7 @@
                 isAdminMode = true;
                 document.getElementById('adminPanel').style.display = 'block';
                 renderOffers();
-                alert('🔓 অ্যাডমিন মোড আনলক হয়েছে! এখন ডিলিট বাটন দেখতে পাবেন।');
+                alert('🔓 অ্যাডমিন মোড আনলক হয়েছে!');
             } else if (inputPass !== null) {
                 alert('❌ ভুল পাসওয়ার্ড!');
             }
@@ -836,7 +709,7 @@
             }).then(() => {
                 document.getElementById('offerForm').reset();
                 uploadedBase64Image = "";
-                alert(`✅ অফার পাবলিশ করা হয়েছে! (${durationMinutes} মিনিট কাউন্টডাউন)`);
+                alert(`✅ অফার পাবলিশ করা হয়েছে! (${durationMinutes} মিনিটের কাউন্টডাউন শুরু)`);
                 setTimeout(fetchOffersFromCloud, 1500);
             }).catch(err => {
                 alert("⚠️ ক্লাউডে পোস্ট করতে সমস্যা হয়েছে!");
@@ -844,101 +717,40 @@
         }
 
         function deleteOffer(id) {
-            if (confirm('⚠️ গুগল শিট থেকে অফারটি চিরতরে মুছে ফেলতে চান?')) {
+            if (confirm('⚠️ গুগল শিট থেকে অফারটি মুছে ফেলতে চান?')) {
                 fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: String(id), action: 'delete' })
+                    body: JSON.stringify({ id: id, action: 'delete' })
                 }).then(() => {
-                    alert('🗑️ অফার সফলভাবে মুছে ফেলা হয়েছে!');
                     setTimeout(fetchOffersFromCloud, 1500);
-                }).catch(err => {
-                    alert("⚠️ ডিলিট করতে সমস্যা হয়েছে!");
                 });
             }
         }
 
-        function addToCart(id, name, price, expiryTime) {
+        function openOrderModal(productName, productPrice, expiryTime) {
             if (expiryTime && Date.now() > Number(expiryTime)) {
                 alert("❌ দুঃখিত! এই অফারের সময়সীমা শেষ হয়ে গেছে।");
                 return;
             }
 
-            const existingItem = cart.find(item => item.id === id);
-            if (existingItem) {
-                existingItem.qty += 1;
-            } else {
-                cart.push({ id, name, price: Number(price), qty: 1 });
-            }
-
-            updateCartUI();
-            alert(`🛒 "${name}" কার্টে যোগ করা হয়েছে!`);
+            document.getElementById('selectedProductName').value = productName;
+            document.getElementById('selectedProductPrice').value = productPrice;
+            document.getElementById('modalProductName').innerHTML = `<i class="fa-solid fa-cart-shopping"></i> ${productName} (৳${productPrice})`;
+            document.getElementById('orderModal').style.display = 'flex';
         }
 
-        function changeQty(id, delta) {
-            const item = cart.find(i => i.id === id);
-            if (item) {
-                item.qty += delta;
-                if (item.qty <= 0) {
-                    cart = cart.filter(i => i.id !== id);
-                }
-            }
-            updateCartUI();
+        function closeOrderModal() {
+            document.getElementById('orderModal').style.display = 'none';
+            document.getElementById('whatsappOrderForm').reset();
         }
 
-        function updateCartUI() {
-            const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
-            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-
-            document.getElementById('cartCount').innerText = totalCount;
-            document.getElementById('cartTotalPrice').innerText = `৳ ${totalPrice}`;
-
-            const floatingBar = document.getElementById('floatingCartBar');
-            if (totalCount > 0) {
-                floatingBar.style.display = 'flex';
-            } else {
-                floatingBar.style.display = 'none';
-                closeCartModal();
-            }
-
-            const container = document.getElementById('cartItemsContainer');
-            if (cart.length === 0) {
-                container.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding:20px;">আপনার কার্ট খালি রয়েছে।</div>`;
-                return;
-            }
-
-            container.innerHTML = cart.map(item => `
-                <div class="cart-item-row">
-                    <div>
-                        <div style="font-weight:bold;">${item.name}</div>
-                        <div style="color:var(--green-text); font-size:11.5px;">৳${item.price} × ${item.qty} = ৳${item.price * item.qty}</div>
-                    </div>
-                    <div class="cart-item-controls">
-                        <button class="btn-qty" onclick="changeQty('${item.id}', -1)">-</button>
-                        <span>${item.qty}</span>
-                        <button class="btn-qty" onclick="changeQty('${item.id}', 1)">+</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function openCartModal() {
-            document.getElementById('cartModal').style.display = 'flex';
-        }
-
-        function closeCartModal() {
-            document.getElementById('cartModal').style.display = 'none';
-        }
-
-        function submitWhatsAppCartOrder(e) {
+        function submitWhatsAppOrder(e) {
             e.preventDefault();
 
-            if (cart.length === 0) {
-                alert("আপনার কার্ট খালি!");
-                return;
-            }
-
+            const pName = document.getElementById('selectedProductName').value;
+            const pPrice = document.getElementById('selectedProductPrice').value;
             const cName = document.getElementById('custName').value.trim();
             const cPhone = document.getElementById('custPhone').value.trim();
             const cMember = document.getElementById('custMemberCode').value.trim() || "নাই";
@@ -946,23 +758,14 @@
             const cNote = document.getElementById('custNote').value.trim() || "কোনো বিশেষ নির্দেশ নেই";
             const orderTime = new Date().toLocaleString('bn-BD', { timeZone: 'Asia/Dhaka' });
 
-            let itemsText = "";
-            let grandTotal = 0;
-
-            cart.forEach((item, index) => {
-                let subTotal = item.price * item.qty;
-                grandTotal += subTotal;
-                itemsText += `${index + 1}. ${item.name} - ৳${item.price} × ${item.qty} = *৳${subTotal}*\n`;
-            });
-
-            const message = `🌸 *সাকুরা মার্কেট - মাল্টিপল আইটেম পিকআপ অর্ডার* 🌸\n` +
+            const message = `🌸 *সাকুরা মার্কেট - পিকআপ অর্ডার* 🌸\n` +
                 `------------------------------------\n` +
                 `⏱️ *অর্ডারের সময়:* ${orderTime}\n` +
-                `⚠️ *শর্ত:* ১ ঘণ্টার মধ্যে দোকানে এসে সংগ্রহ করতে হবে।\n\n` +
-                `🛒 *অর্ডারকৃত পণ্যসমূহ:*\n${itemsText}\n` +
-                `💰 *সর্বমোট বিল:* *৳${grandTotal}*\n\n` +
-                `👤 *গ্রাহকের নাম:* ${cName}\n` +
-                `📞 *ফোন নম্বর:* ${cPhone}\n` +
+                `⚠️ *শর্ত:* ১ ঘণ্টার মধ্যে দোকানে এসে সংগ্ৰহ করতে হবে।\n\n` +
+                `🛒 *পণ্য:* ${pName}\n` +
+                `💰 *দাম:* ৳${pPrice}\n\n` +
+                `👤 *নাম:* ${cName}\n` +
+                `📞 *ফোন:* ${cPhone}\n` +
                 `💳 *মেম্বারশিপ ID:* ${cMember}\n` +
                 `🎟️ *ভাউচার কোড:* ${cVoucher}\n` +
                 `📝 *নোট:* ${cNote}\n` +
@@ -970,19 +773,16 @@
 
             const waUrl = `https://wa.me/${SHOP_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
             window.open(waUrl, '_blank');
-            
-            cart = [];
-            updateCartUI();
-            closeCartModal();
-            document.getElementById('whatsappOrderForm').reset();
+            closeOrderModal();
         }
 
         function updateTimersUI() {
             const now = Date.now();
             offers.forEach(o => {
                 const timerEl = document.getElementById(`timer-${o.id}`);
-                const btnEl = document.getElementById(`btn-add-${o.id}`);
+                const btnEl = document.getElementById(`btn-order-${o.id}`);
 
+                // fallback mechanism if Google Sheet doesn't return expiryTime
                 let expiry = Number(o.expiryTime);
                 if (!expiry && o.createdAt && o.durationMinutes) {
                     expiry = Number(o.createdAt) + (Number(o.durationMinutes) * 60 * 1000);
@@ -1010,6 +810,9 @@
                             timerEl.style.color = "var(--accent-gold)";
                         }
                     }
+                } else if (timerEl) {
+                    // Default fallback if time is missing
+                    timerEl.innerText = "⏳ ৩০ মিনিট";
                 }
             });
         }
@@ -1017,7 +820,7 @@
         function renderOffers() {
             const container = document.getElementById('offersGridContainer');
 
-            if (!offers || offers.length === 0) {
+            if (offers.length === 0) {
                 container.innerHTML = `<div class="no-offers"><i class="fa-solid fa-box-open fa-2x" style="margin-bottom:8px;"></i><br>বর্তমানে ক্লাউডে কোনো অফার নেই।</div>`;
                 return;
             }
@@ -1025,16 +828,10 @@
             const now = Date.now();
 
             container.innerHTML = offers.map(o => {
-                const itemName = (o.name !== undefined && o.name !== null) ? String(o.name) : "পণ্য";
-                const itemPrice = (o.newPrice !== undefined && o.newPrice !== null) ? o.newPrice : 0;
-                const itemId = (o.id !== undefined && o.id !== null) ? String(o.id) : "";
-                
-                let imgContent = o.img ? `<img src="${o.img}" alt="${itemName}">` : `<i class="fa-solid fa-tag fa-3x" style="color:var(--accent-gold);"></i>`;
-                
-                // Show delete button ONLY when Admin Mode is unlocked
-                let deleteBtnHtml = isAdminMode ? `<button class="btn-delete-item" onclick="deleteOffer('${itemId}')"><i class="fa-solid fa-trash"></i> অফার মুছে ফেলুন</button>` : '';
+                let imgContent = o.img ? `<img src="${o.img}" alt="${o.name}">` : `<i class="fa-solid fa-tag fa-3x" style="color:var(--accent-gold);"></i>`;
+                let deleteBtnHtml = isAdminMode ? `<button class="btn-delete-item" onclick="deleteOffer('${o.id}')" style="display:block;"><i class="fa-solid fa-trash"></i></button>` : '';
 
-                const safeName = itemName.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                const safeName = o.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 
                 let expiry = Number(o.expiryTime);
                 if (!expiry && o.createdAt && o.durationMinutes) {
@@ -1046,30 +843,31 @@
                 return `
                     <div class="offer-poster-card">
                         <div class="poster-badge">${o.badge || 'FLASH SALE'}</div>
-                        <div class="timer-badge" id="timer-${itemId}">লোড হচ্ছে...</div>
+                        <div class="timer-badge" id="timer-${o.id}">ক্যালকুলেট হচ্ছে...</div>
                         <div class="poster-img-box">${imgContent}</div>
                         <div class="poster-content">
-                            <div class="poster-item-name">${itemName}</div>
+                            <div class="poster-item-name">${o.name}</div>
                             <div class="poster-desc">${o.desc || ''}</div>
                             <div class="price-row">
-                                <span class="old-price">৳ ${o.oldPrice || 0}</span>
-                                <span class="new-price">৳ ${itemPrice}</span>
+                                <span class="old-price">৳ ${o.oldPrice}</span>
+                                <span class="new-price">৳ ${o.newPrice}</span>
                             </div>
                             <div class="btn-card-action">
-                                <button id="btn-add-${itemId}" 
+                                <button id="btn-order-${o.id}" 
                                         ${isExpired ? 'disabled' : ''} 
-                                        onclick="addToCart('${itemId}', '${safeName}', '${itemPrice}', '${expiry}')" 
-                                        class="btn-add-cart ${isExpired ? 'expired' : ''}">
-                                    <i class="fa-solid ${isExpired ? 'fa-lock' : 'fa-cart-plus'}"></i> 
-                                    ${isExpired ? 'অফার শেষ' : 'কার্টে যোগ করুন (+)'}
+                                        onclick="openOrderModal('${safeName}', '${o.newPrice}', '${expiry}')" 
+                                        class="btn-order ${isExpired ? 'expired' : ''}">
+                                    <i class="fa-solid ${isExpired ? 'fa-lock' : 'fa-brands fa-whatsapp'}"></i> 
+                                    ${isExpired ? 'অফার শেষ (Expired)' : 'অর্ডার করুন'}
                                 </button>
+                                ${deleteBtnHtml}
                             </div>
-                            ${deleteBtnHtml}
                         </div>
                     </div>
                 `;
             }).join('');
 
+            // Call timer update immediately after render
             updateTimersUI();
         }
     </script>
