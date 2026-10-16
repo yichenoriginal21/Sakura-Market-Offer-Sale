@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সাকুরা মার্কেট অফার - ক্লাউড সিঙ্কড সেল</title>
+    <title>সাকুরা মার্কেট অফার - দোকানে পিকআপ অর্ডার</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -88,6 +88,18 @@
             color: var(--accent-gold);
         }
 
+        .pickup-notice {
+            background: rgba(250, 204, 21, 0.1);
+            border: 1px dashed var(--accent-gold);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .header-actions {
             display: flex;
             gap: 6px;
@@ -163,6 +175,10 @@
             outline: none;
         }
 
+        .form-control:focus {
+            border-color: var(--accent-pink);
+        }
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -231,7 +247,6 @@
             z-index: 2;
         }
 
-        /* 🖼️ FIXED FULL IMAGE DISPLAY CONTAINER */
         .poster-img-box {
             width: 100%;
             height: 180px;
@@ -331,6 +346,80 @@
             border: 1px dashed var(--border-color);
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-pink);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--accent-gold);
+        }
+
+        .btn-close-modal {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .optional-badge {
+            font-size: 10px;
+            background: rgba(148, 163, 184, 0.2);
+            color: var(--text-muted);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+
+        .btn-whatsapp-send {
+            width: 100%;
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
         .footer-credit {
             text-align: center;
             font-size: 11px;
@@ -350,13 +439,19 @@
                     <div class="brand-logo">咲</div>
                     <div>
                         <div class="brand-title">সাকুরা মার্কেট অফার</div>
-                        <div class="brand-subtitle">গুগল শিট ক্লাউড সিঙ্কড</div>
+                        <div class="brand-subtitle">দোকানে পিকআপ সার্ভিস</div>
                     </div>
                 </div>
                 <div class="header-actions">
                     <button class="btn-action" onclick="requestAdminAccess()"><i class="fa-solid fa-lock"></i> অ্যাডমিন</button>
                 </div>
             </div>
+
+            <div class="pickup-notice">
+                <i class="fa-solid fa-store"></i>
+                <span><strong>নোট:</strong> আমাদের পার্সেল/হোম ডেলিভারি সুবিধা নেই। অর্ডারের পর পণ্য দোকান থেকে সরাসরি সংগ্রহ করতে হবে।</span>
+            </div>
+
             <button class="btn-install-widget" id="installWidgetBtn" onclick="installWidgetApp()">
                 <i class="fa-solid fa-mobile-screen-button"></i> মোবাইল স্ক্রিনে উইজেট হিসেবে সেভ করুন
             </button>
@@ -409,12 +504,56 @@
         </div>
 
         <div class="footer-credit">
-            © SAKURA MARKET OFFERS • SYLHET • GOOGLE SHEETS CLOUD
+            © SAKURA MARKET OFFERS • SYLHET • STORE PICKUP ONLY
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title" id="modalProductName"><i class="fa-solid fa-cart-shopping"></i> অর্ডার ডিটেইলস</div>
+                <button class="btn-close-modal" onclick="closeOrderModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="whatsappOrderForm" onsubmit="submitWhatsAppOrder(event)">
+                <input type="hidden" id="selectedProductName">
+                <input type="hidden" id="selectedProductPrice">
+
+                <div class="form-group">
+                    <label class="form-label">আপনার নাম (Customer Name) *</label>
+                    <input type="text" id="custName" class="form-control" placeholder="আপনার পুরো নাম লিখুন" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">ফোন নম্বর (Phone Number) *</label>
+                    <input type="tel" id="custPhone" class="form-control" placeholder="017XXXXXXXX" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">মেম্বারশিপ কোড/আইডি <span class="optional-badge">ঐচ্ছিক (Optional)</span></label>
+                    <input type="text" id="custMemberCode" class="form-control" placeholder="যেমন: SKR-2026-1001 (থাকলে দিন)">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">ভাউচার কোড <span class="optional-badge">ঐচ্ছিক (Optional)</span></label>
+                    <input type="text" id="custVoucherCode" class="form-control" placeholder="যেমন: SAKURA-50000 (থাকলে দিন)">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">অতিরিক্ত কোনো নোট/পরিমাণ <span class="optional-badge">ঐচ্ছিক</span></label>
+                    <input type="text" id="custNote" class="form-control" placeholder="যেমন: ২টি আইটেম রেডি রাখবেন">
+                </div>
+
+                <button type="submit" class="btn-whatsapp-send">
+                    <i class="fa-brands fa-whatsapp"></i> হোয়াটসঅ্যাপে অর্ডার পাঠান
+                </button>
+            </form>
         </div>
     </div>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyVYdnXMuAxUTXMikMY0xwA69hISffHOH-s4zQoPKrRR2ymQ8fXD-RxS5N3VETo7_i1/exec";
+        const SHOP_WHATSAPP_NUMBER = "8801789504376";
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed', err));
@@ -558,6 +697,48 @@
             }
         }
 
+        function openOrderModal(productName, productPrice) {
+            document.getElementById('selectedProductName').value = productName;
+            document.getElementById('selectedProductPrice').value = productPrice;
+            document.getElementById('modalProductName').innerHTML = `<i class="fa-solid fa-cart-shopping"></i> ${productName} (৳${productPrice})`;
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').style.display = 'none';
+            document.getElementById('whatsappOrderForm').reset();
+        }
+
+        function submitWhatsAppOrder(e) {
+            e.preventDefault();
+
+            const pName = document.getElementById('selectedProductName').value;
+            const pPrice = document.getElementById('selectedProductPrice').value;
+            const cName = document.getElementById('custName').value.trim();
+            const cPhone = document.getElementById('custPhone').value.trim();
+            const cMember = document.getElementById('custMemberCode').value.trim() || "নাই (Non-Member)";
+            const cVoucher = document.getElementById('custVoucherCode').value.trim() || "নাই (No Voucher)";
+            const cNote = document.getElementById('custNote').value.trim() || "কোনো অতিরিক্ত নির্দেশ নেই";
+
+            const message = `🌸 *সাকুরা মার্কেট - পিকআপ অর্ডার* 🌸\n` +
+                `------------------------------------\n` +
+                `দোকানে আসবো কিছুক্ষণের মধ্যে আমার জন্য এই অর্ডারগুলো রেডি করে রাখুন।\n\n` +
+                `🛒 *পণ্যের নাম:* ${pName}\n` +
+                `💰 *অফার মূল্য:* ৳${pPrice}\n\n` +
+                `👤 *গ্রাহকের নাম:* ${cName}\n` +
+                `📞 *ফোন নম্বর:* ${cPhone}\n` +
+                `💳 *মেম্বারশিপ কোড:* ${cMember}\n` +
+                `🎟️ *ভাউচার কোড:* ${cVoucher}\n` +
+                `📝 *নোট:* ${cNote}\n` +
+                `------------------------------------`;
+
+            const encodedMsg = encodeURIComponent(message);
+            const waUrl = `https://wa.me/${SHOP_WHATSAPP_NUMBER}?text=${encodedMsg}`;
+
+            window.open(waUrl, '_blank');
+            closeOrderModal();
+        }
+
         function renderOffers() {
             const container = document.getElementById('offersGridContainer');
 
@@ -569,6 +750,9 @@
             container.innerHTML = offers.map(o => {
                 let imgContent = o.img ? `<img src="${o.img}" alt="${o.name}">` : `<i class="fa-solid fa-tag fa-3x" style="color:var(--accent-gold);"></i>`;
                 let deleteBtnHtml = isAdminMode ? `<button class="btn-delete-item" onclick="deleteOffer('${o.id}')" style="display:block;"><i class="fa-solid fa-trash"></i></button>` : '';
+
+                // Escape quotes for safe function argument passing
+                const safeName = o.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
                 return `
                     <div class="offer-poster-card">
@@ -582,9 +766,9 @@
                                 <span class="new-price">৳ ${o.newPrice}</span>
                             </div>
                             <div class="btn-card-action">
-                                <a href="https://wa.me/8801789504376?text=Hello,%20I%20want%20to%20order%20${encodeURIComponent(o.name)}%20at%20offer%20price%20৳${o.newPrice}" target="_blank" class="btn-order">
+                                <button onclick="openOrderModal('${safeName}', '${o.newPrice}')" class="btn-order">
                                     <i class="fa-brands fa-whatsapp"></i> অর্ডার করুন
-                                </a>
+                                </button>
                                 ${deleteBtnHtml}
                             </div>
                         </div>
