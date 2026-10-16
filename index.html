@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সাকুরা মার্কেট অফার - স্পেশাল ডিসকাউন্ট ও সেল</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-card: #1e293b;
+            --border-color: #334155;
+            --accent-pink: #e11d48;
+            --accent-pink-hover: #be123c;
+            --accent-gold: #facc15;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --green-text: #4ade80;
+            --red-text: #f87171;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'SolaimanLipi';
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            padding: 16px;
+            min-height: 100vh;
+        }
+
+        .portal-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, #2d0c15 0%, #1e293b 100%);
+            border: 1px solid var(--accent-pink);
+            border-radius: 16px;
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(225, 29, 72, 0.2);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            background: var(--accent-pink);
+            color: #fff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .brand-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .brand-subtitle {
+            font-size: 11px;
+            color: var(--accent-gold);
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            background: rgba(250, 204, 21, 0.15);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+            padding: 6px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .admin-panel {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-gold);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .panel-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: var(--accent-gold);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .form-control {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: var(--text-main);
+            font-size: 13.5px;
+            outline: none;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--accent-gold);
+            color: #0f172a;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        .offers-section-title {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+            border-bottom: 2px dashed var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .offers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        @media (max-width: 480px) {
+            .offers-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .offer-poster-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .poster-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--accent-pink);
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .poster-img-box {
+            width: 100%;
+            height: 140px;
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            overflow: hidden;
+        }
+
+        .poster-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .poster-content {
+            padding: 14px;
+        }
+
+        .poster-item-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .poster-desc {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .old-price {
+            font-size: 13px;
+            color: var(--red-text);
+            text-decoration: line-through;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .new-price {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--green-text);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .btn-card-action {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-order {
+            flex: 1;
+            background: var(--accent-pink);
+            color: #fff;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-delete-item {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .no-offers {
+            grid-column: span 2;
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px dashed var(--border-color);
+        }
+
+        .footer-credit {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 30px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="brand-logo">咲</div>
+                <div>
+                    <div class="brand-title">সাকুরা মার্কেট অফার</div>
+                    <div class="brand-subtitle">আজকের স্পেশাল ডিসকাউন্ট ও সেল পোস্টার</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-action" onclick="requestAdminAccess()"><i class="fa-solid fa-lock"></i> অ্যাডমিন</button>
+            </div>
+        </header>
+
+        <!-- Admin Control Panel -->
+        <div class="admin-panel" id="adminPanel">
+            <div class="panel-title"><i class="fa-solid fa-plus-circle"></i> নতুন অফার পোস্টার ও নোটিফিকেশন পাবলিশ করুন</div>
+            <form id="offerForm" onsubmit="handleAddOffer(event)">
+                <div class="form-group">
+                    <label class="form-label">পণ্যের নাম (Item Name)</label>
+                    <input type="text" id="itemName" class="form-control" placeholder="যেমন: জাপানি গ্রিন টি" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">পূর্বের দাম (Old Price ৳)</label>
+                        <input type="number" id="itemOldPrice" class="form-control" placeholder="200" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">আজকের সেল দাম (New Price ৳)</label>
+                        <input type="number" id="itemNewPrice" class="form-control" placeholder="190" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ছাড়ের ব্যাজ (Tag)</label>
+                    <input type="text" id="itemBadge" class="form-control" value="TODAY'S SALE">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ছবির লিংক (Image URL - Optional)</label>
+                    <input type="url" id="itemImg" class="form-control" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">বিবরণ (Description)</label>
+                    <input type="text" id="itemDesc" class="form-control" placeholder="সীমিত সময়ের জন্য বিশেষ ছাড়।">
+                </div>
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-bell"></i> পাবলিশ ও নোটিফিকেশন পাঠান</button>
+            </form>
+        </div>
+
+        <!-- Offers List Section -->
+        <div class="offers-section-title">
+            <i class="fa-solid fa-fire" style="color: var(--accent-gold);"></i> আজকের আকর্ষণীয় সেল ও ডিসকাউন্ট অফার
+        </div>
+
+        <div class="offers-grid" id="offersGridContainer"></div>
+
+        <div class="footer-credit">
+            © SAKURA MARKET OFFERS • SYLHET • HOSTED VIA GITHUB PAGES
+        </div>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed', err));
+        }
+
+        const ADMIN_PASS = "28282805";
+
+        const defaultOffers = [
+            {
+                id: '1',
+                name: 'জাপানি প্রিমিয়াম গ্রিন টি',
+                oldPrice: 200,
+                newPrice: 190,
+                badge: 'SPECIAL SALE',
+                img: '',
+                desc: 'আজকের বিশেষ ডিসকাউন্টে সীমিত সময়ের অফার।'
+            }
+        ];
+
+        let offers = JSON.parse(localStorage.getItem('sakura_market_offers')) || defaultOffers;
+        let isAdminMode = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderOffers();
+        });
+
+        // 🌸 Custom Japanese Notification Chime using Web Audio API
+        function playJapaneseChime() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Play a pleasant two-tone Japanese konbini / anime chime (G5 to C6)
+                const playTone = (freq, startTime, duration) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime + startTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + startTime + duration);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    
+                    osc.start(audioCtx.currentTime + startTime);
+                    osc.stop(audioCtx.currentTime + startTime + duration);
+                };
+
+                playTone(783.99, 0.0, 0.25); // G5
+                playTone(1046.50, 0.2, 0.4);  // C6
+            } catch (e) {
+                console.log("Audio not supported or blocked until interaction", e);
+            }
+        }
+
+        function requestAdminAccess() {
+            if (isAdminMode) {
+                isAdminMode = false;
+                document.getElementById('adminPanel').style.display = 'none';
+                renderOffers();
+                return;
+            }
+
+            const inputPass = prompt("🔐 অ্যাডমিন পাসওয়ার্ড দিন:");
+            if (inputPass === ADMIN_PASS) {
+                isAdminMode = true;
+                document.getElementById('adminPanel').style.display = 'block';
+                renderOffers();
+                alert('🔓 অ্যাডমিন মোড আনলক হয়েছে!');
+            } else if (inputPass !== null) {
+                alert('❌ ভুল পাসওয়ার্ড!');
+            }
+        }
+
+        function handleAddOffer(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('itemName').value.trim();
+            const oldPrice = parseFloat(document.getElementById('itemOldPrice').value) || 0;
+            const newPrice = parseFloat(document.getElementById('itemNewPrice').value) || 0;
+
+            const newOffer = {
+                id: String(Date.now()),
+                name: name,
+                oldPrice: oldPrice,
+                newPrice: newPrice,
+                badge: document.getElementById('itemBadge').value.trim() || 'SALE',
+                img: document.getElementById('itemImg').value.trim(),
+                desc: document.getElementById('itemDesc').value.trim()
+            };
+
+            offers.unshift(newOffer);
+            localStorage.setItem('sakura_market_offers', JSON.stringify(offers));
+
+            document.getElementById('offerForm').reset();
+            document.getElementById('itemBadge').value = "TODAY'S SALE";
+
+            renderOffers();
+
+            // Play Japanese Chime & trigger notification popup
+            playJapaneseChime();
+            alert(`🌸 নতুন সেল নোটিফিকেশন!\n\n${name} এখন অফার মূল্যে বিক্রি হচ্ছে!\nপূর্বের দাম: ৳${oldPrice} ➔ নতুন দাম: ৳${newPrice}`);
+        }
+
+        function deleteOffer(id) {
+            if (confirm('⚠️ অফারটি মুছে ফেলতে চান?')) {
+                offers = offers.filter(o => o.id !== String(id));
+                localStorage.setItem('sakura_market_offers', JSON.stringify(offers));
+                renderOffers();
+            }
+        }
+
+        function renderOffers() {
+            const container = document.getElementById('offersGridContainer');
+
+            if (offers.length === 0) {
+                container.innerHTML = `<div class="no-offers"><i class="fa-solid fa-box-open fa-2x" style="margin-bottom:8px;"></i><br>বর্তমানে কোনো স্পেশাল অফার বা সেল নেই।</div>`;
+                return;
+            }
+
+            container.innerHTML = offers.map(o => {
+                let imgContent = o.img ? `<img src="${o.img}" alt="${o.name}">` : `<i class="fa-solid fa-tag fa-3x"></i>`;
+                let deleteBtnHtml = isAdminMode ? `<button class="btn-delete-item" onclick="deleteOffer('${o.id}')" style="display:block;"><i class="fa-solid fa-trash"></i></button>` : '';
+
+                return `
+                    <div class="offer-poster-card">
+                        <div class="poster-badge">${o.badge}</div>
+                        <div class="poster-img-box">${imgContent}</div>
+                        <div class="poster-content">
+                            <div class="poster-item-name">${o.name}</div>
+                            <div class="poster-desc">${o.desc || ''}</div>
+                            <div class="price-row">
+                                <span class="old-price">৳ ${o.oldPrice}</span>
+                                <span class="new-price">৳ ${o.newPrice}</span>
+                            </div>
+                            <div class="btn-card-action">
+                                <a href="https://wa.me/8801789504376?text=Hello,%20I%20want%20to%20order%20${encodeURIComponent(o.name)}%20at%20offer%20price%20৳${o.newPrice}" target="_blank" class="btn-order">
+                                    <i class="fa-brands fa-whatsapp"></i> অর্ডার করুন
+                                </a>
+                                ${deleteBtnHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
