@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সাকুরা মার্কেট অফার - লাইভ টাইম লিমিট</title>
+    <title>さくら Sakura Market - 日本 Flash Offers</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@600;900&family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0f172a;
-            --bg-card: #1e293b;
-            --border-color: #334155;
-            --accent-pink: #e11d48;
-            --accent-pink-hover: #be123c;
-            --accent-gold: #facc15;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-dark: #0a060a;
+            --bg-card: rgba(26, 16, 26, 0.85);
+            --border-pink: #e11d48;
+            --border-subtle: #3d1b28;
+            --sakura-pink: #ff758f;
+            --sakura-gold: #facc15;
+            --text-light: #fff0f5;
+            --text-muted: #a3889b;
             --green-text: #4ade80;
             --red-text: #f87171;
         }
@@ -25,31 +25,52 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'SolaimanLipi';
+            font-family: 'Noto Sans JP', 'SolaimanLipi', sans-serif;
         }
 
         body {
-            background-color: var(--bg-primary);
-            color: var(--text-main);
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(225, 29, 72, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(250, 204, 21, 0.1) 0%, transparent 40%);
+            color: var(--text-light);
             padding: 16px;
             min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Sakura Falling Petals Canvas */
+        #sakura-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
         }
 
         .portal-container {
-            max-width: 600px;
+            max-width: 620px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
+        /* Japanese Style Header */
         .app-header {
-            background: linear-gradient(135deg, #2d0c15 0%, #1e293b 100%);
-            border: 1px solid var(--accent-pink);
-            border-radius: 16px;
-            padding: 16px;
+            background: linear-gradient(145deg, #1f0812 0%, #12050b 100%);
+            border: 1.5px solid var(--border-pink);
+            border-radius: 20px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 20px rgba(225, 29, 72, 0.2);
+            gap: 14px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(225, 29, 72, 0.25);
+            backdrop-filter: blur(8px);
+            position: relative;
         }
 
         .header-top {
@@ -61,59 +82,74 @@
         .brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
-        .brand-logo {
-            width: 40px;
-            height: 40px;
-            background: var(--accent-pink);
-            color: #fff;
-            border-radius: 10px;
+        .brand-logo-japan {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--border-pink), #be123c);
+            color: #ffffff;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            font-weight: bold;
+            font-size: 26px;
+            font-weight: 900;
+            font-family: 'Noto Serif JP', serif;
+            box-shadow: 0 0 15px rgba(225, 29, 72, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .brand-title-box {
+            display: flex;
+            flex-direction: column;
         }
 
         .brand-title {
-            font-size: 18px;
-            font-weight: 800;
+            font-size: 20px;
+            font-weight: 900;
             color: #ffffff;
-        }
-
-        .brand-subtitle {
-            font-size: 10.5px;
-            color: var(--accent-gold);
-        }
-
-        .pickup-notice {
-            background: rgba(225, 29, 72, 0.1);
-            border: 1px dashed var(--accent-pink);
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 12px;
-            color: #fca5a5;
+            letter-spacing: 0.5px;
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-
-        .header-actions {
-            display: flex;
             gap: 6px;
         }
 
-        .btn-action {
-            background: rgba(250, 204, 21, 0.15);
-            color: var(--accent-gold);
-            border: 1px solid var(--accent-gold);
-            padding: 6px 10px;
-            border-radius: 8px;
-            cursor: pointer;
+        .brand-subtitle {
             font-size: 11px;
+            color: var(--sakura-gold);
+            letter-spacing: 0.8px;
+        }
+
+        .pickup-notice {
+            background: rgba(225, 29, 72, 0.12);
+            border: 1px dashed var(--sakura-pink);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #fecdd3;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.5;
+        }
+
+        .btn-admin-access {
+            background: rgba(250, 204, 21, 0.15);
+            color: var(--sakura-gold);
+            border: 1px solid var(--sakura-gold);
+            padding: 7px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
             font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .btn-admin-access:hover {
+            background: var(--sakura-gold);
+            color: #000;
         }
 
         .btn-install-widget {
@@ -121,32 +157,34 @@
             background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
             color: white;
             border: none;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 13px;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13.5px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
+            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);
         }
 
+        /* Admin Setup Form */
         .admin-panel {
             display: none;
             background: var(--bg-card);
-            border: 1px solid var(--accent-gold);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 20px;
+            border: 1px solid var(--sakura-gold);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 24px;
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.15);
         }
 
         .panel-title {
             font-size: 15px;
             font-weight: bold;
-            color: var(--accent-gold);
-            margin-bottom: 12px;
+            color: var(--sakura-gold);
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -161,22 +199,22 @@
             font-size: 12px;
             font-weight: 600;
             color: var(--text-muted);
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
 
         .form-control {
             width: 100%;
-            background: #0f172a;
-            border: 1px solid var(--border-color);
+            background: #120810;
+            border: 1px solid var(--border-subtle);
             border-radius: 8px;
             padding: 10px 12px;
-            color: var(--text-main);
+            color: var(--text-light);
             font-size: 13.5px;
             outline: none;
         }
 
         .form-control:focus {
-            border-color: var(--accent-pink);
+            border-color: var(--border-pink);
         }
 
         .form-row {
@@ -187,36 +225,42 @@
 
         .btn-submit {
             width: 100%;
-            background: var(--accent-gold);
-            color: #0f172a;
+            background: var(--sakura-gold);
+            color: #1a0810;
             border: none;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 10px;
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             margin-top: 6px;
+            transition: transform 0.2s ease;
         }
 
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* Offer Cards Grid Section */
         .offers-section-title {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 800;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            color: var(--text-main);
-            border-bottom: 2px dashed var(--border-color);
-            padding-bottom: 8px;
+            color: var(--text-light);
+            border-bottom: 2px dashed var(--border-subtle);
+            padding-bottom: 10px;
         }
 
         .offers-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            gap: 16px;
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 500px) {
             .offers-grid {
                 grid-template-columns: 1fr;
             }
@@ -224,37 +268,43 @@
 
         .offer-poster-card {
             background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
             overflow: hidden;
             position: relative;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .offer-poster-card:hover {
+            border-color: var(--border-pink);
         }
 
         .poster-badge {
             position: absolute;
             top: 10px;
             left: 10px;
-            background: var(--accent-pink);
+            background: linear-gradient(135deg, var(--border-pink), #be123c);
             color: #fff;
-            padding: 3px 8px;
+            padding: 4px 9px;
             border-radius: 6px;
             font-size: 10px;
             font-weight: bold;
             z-index: 2;
+            letter-spacing: 0.5px;
         }
 
         .timer-badge {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid var(--accent-gold);
-            color: var(--accent-gold);
-            padding: 3px 8px;
+            background: rgba(10, 6, 10, 0.92);
+            border: 1px solid var(--sakura-gold);
+            color: var(--sakura-gold);
+            padding: 4px 8px;
             border-radius: 6px;
             font-size: 10.5px;
             font-weight: bold;
@@ -271,7 +321,7 @@
             justify-content: center;
             color: var(--text-muted);
             overflow: hidden;
-            padding: 8px;
+            padding: 10px;
         }
 
         .poster-img-box img {
@@ -288,7 +338,7 @@
         }
 
         .poster-item-name {
-            font-size: 15px;
+            font-size: 15.5px;
             font-weight: 700;
             color: #ffffff;
             margin-bottom: 6px;
@@ -298,12 +348,13 @@
             font-size: 11.5px;
             color: var(--text-muted);
             margin-bottom: 12px;
+            line-height: 1.4;
         }
 
         .price-row {
             display: flex;
             align-items: baseline;
-            gap: 8px;
+            gap: 10px;
             margin-bottom: 12px;
         }
 
@@ -315,7 +366,7 @@
         }
 
         .new-price {
-            font-size: 18px;
+            font-size: 19px;
             font-weight: 900;
             color: var(--green-text);
             font-family: 'Space Mono', monospace;
@@ -328,11 +379,11 @@
 
         .btn-order {
             flex: 1;
-            background: var(--accent-pink);
+            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
             color: #fff;
             border: none;
-            padding: 8px;
-            border-radius: 6px;
+            padding: 9px;
+            border-radius: 8px;
             font-size: 12px;
             font-weight: bold;
             cursor: pointer;
@@ -341,10 +392,9 @@
             transition: all 0.2s ease;
         }
 
-        /* Expired Button Style */
         .btn-order:disabled, .btn-order.expired {
-            background: #334155 !important;
-            color: #94a3b8 !important;
+            background: #2a1a24 !important;
+            color: #886a7c !important;
             cursor: not-allowed !important;
             opacity: 0.6;
         }
@@ -354,7 +404,7 @@
             color: white;
             border: none;
             padding: 8px 10px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 12px;
             cursor: pointer;
             display: none;
@@ -366,11 +416,11 @@
             padding: 40px;
             color: var(--text-muted);
             background: var(--bg-card);
-            border-radius: 12px;
-            border: 1px dashed var(--border-color);
+            border-radius: 16px;
+            border: 1px dashed var(--border-subtle);
         }
 
-        /* Modal Styles */
+        /* Order Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -378,49 +428,50 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0, 0, 0, 0.82);
             z-index: 1000;
             justify-content: center;
             align-items: center;
             padding: 16px;
+            backdrop-filter: blur(5px);
         }
 
         .modal-card {
-            background: var(--bg-card);
-            border: 1px solid var(--accent-pink);
-            border-radius: 16px;
+            background: #1a0c14;
+            border: 1px solid var(--border-pink);
+            border-radius: 20px;
             width: 100%;
             max-width: 450px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 22px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.7);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 14px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 10px;
         }
 
         .modal-title {
-            font-size: 16px;
+            font-size: 16.5px;
             font-weight: bold;
-            color: var(--accent-gold);
+            color: var(--sakura-gold);
         }
 
         .btn-close-modal {
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
         }
 
         .optional-badge {
             font-size: 10px;
-            background: rgba(148, 163, 184, 0.2);
+            background: rgba(163, 136, 155, 0.2);
             color: var(--text-muted);
             padding: 2px 6px;
             border-radius: 4px;
@@ -433,47 +484,50 @@
             color: white;
             border: none;
             padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 10px;
+            font-size: 14.5px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 14px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
         }
 
         .footer-credit {
             text-align: center;
             font-size: 11px;
             color: var(--text-muted);
-            margin-top: 30px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 15px;
+            margin-top: 36px;
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 16px;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
 
+    <!-- Sakura Petals Canvas Animation -->
+    <canvas id="sakura-canvas"></canvas>
+
     <div class="portal-container">
         <header class="app-header">
             <div class="header-top">
                 <div class="brand">
-                    <div class="brand-logo">咲</div>
-                    <div>
-                        <div class="brand-title">সাকুরা মার্কেট অফার</div>
-                        <div class="brand-subtitle">দোকানে পিকআপ ও লাইভ কাউন্টডাউন</div>
+                    <div class="brand-logo-japan">咲</div>
+                    <div class="brand-title-box">
+                        <div class="brand-title">সাকুরা মার্কেট 🌸</div>
+                        <div class="brand-subtitle">SAKURA MARKET • AMBERKHANA, SYLHET</div>
                     </div>
                 </div>
-                <div class="header-actions">
-                    <button class="btn-action" onclick="requestAdminAccess()"><i class="fa-solid fa-lock"></i> অ্যাডমিন</button>
-                </div>
+                <button class="btn-admin-access" onclick="requestAdminAccess()"><i class="fa-solid fa-lock"></i> অ্যাডমিন</button>
             </div>
 
             <div class="pickup-notice">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <span><strong>শর্ত:</strong> হোম ডেলিভারি নেই। অর্ডার করার পর অবশ্যই <strong>১ ঘণ্টার মধ্যে</strong> দোকানে এসে পণ্য সংগ্রহ করতে হবে, অন্যথায় অর্ডার স্বয়ংক্রিয়ভাবে বাতিল হবে।</span>
+                <i class="fa-solid fa-triangle-exclamation" style="color: var(--sakura-pink);"></i>
+                <span><strong>শর্ত:</strong> হোম ডেলিভারি নেই। অর্ডার করার পর অবশ্যই <strong>১ ঘণ্টার মধ্যে</strong> দোকানে এসে পণ্য সংগ্রহ করতে হবে, অন্যথায় অর্ডার বাতিল হবে।</span>
             </div>
 
             <button class="btn-install-widget" id="installWidgetBtn" onclick="installWidgetApp()">
@@ -481,9 +535,9 @@
             </button>
         </header>
 
-        <!-- Admin Control Panel -->
+        <!-- Admin Setup Form Panel -->
         <div class="admin-panel" id="adminPanel">
-            <div class="panel-title"><i class="fa-solid fa-cloud-arrow-up"></i> নতুন অফার ও টাইম লিমিট সেটআপ</div>
+            <div class="panel-title"><i class="fa-solid fa-cloud-arrow-up"></i> নতুন অফার পোস্ট করুন (Google Sheets)</div>
             <form id="offerForm" onsubmit="handleAddOffer(event)">
                 <div class="form-group">
                     <label class="form-label">পণ্যের নাম (Item Name)</label>
@@ -501,30 +555,30 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">অফারের সময়সীমা (Minutes)</label>
-                    <input type="number" id="itemDuration" class="form-control" value="30" placeholder="কত মিনিট ছাড় থাকবে? (যেমন: 30, 60)" required>
+                    <input type="number" id="itemDuration" class="form-control" value="30" placeholder="কত মিনিট ছাড় থাকবে?" required>
                 </div>
                 <div class="form-group">
                     <label class="form-label">ছাড়ের ব্যাজ (Tag)</label>
-                    <input type="text" id="itemBadge" class="form-control" value="LIMITED FLASH SALE">
+                    <input type="text" id="itemBadge" class="form-control" value="SAKURA FLASH SALE">
                 </div>
                 <div class="form-group">
                     <label class="form-label">বিবরণ (Description)</label>
                     <input type="text" id="itemDesc" class="form-control" placeholder="সীমিত সময়ের জন্য বিশেষ ছাড়।">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">পণ্যের ছবি (Image URL অথবা ব্রাউজ করুন)</label>
+                    <label class="form-label">পণ্যের ছবি (URL অথবা ব্রাউজ করুন)</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="url" id="itemImgUrl" class="form-control" placeholder="https://image-link.com" style="flex: 2;">
                         <input type="file" id="itemImgFile" accept="image/*" class="form-control" style="flex: 1; padding: 6px; font-size: 11px;" onchange="previewLocalImage(event)">
                     </div>
                 </div>
-                <button type="submit" class="btn-submit"><i class="fa-solid fa-cloud"></i> গুগল শিটে পাবলিশ করুন</button>
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-cloud"></i> পাবলিশ করুন</button>
             </form>
         </div>
 
         <div class="offers-section-title">
-            <span><i class="fa-solid fa-stopwatch" style="color: var(--accent-gold);"></i> রিয়েল-টাইম ফ্ল্যাশ সেল অফার</span>
-            <span id="syncIndicator" style="font-size: 11px; color: var(--green-text);">🟢 সিঙ্কড</span>
+            <span><i class="fa-solid fa-stopwatch" style="color: var(--sakura-gold);"></i> রিয়েল-টাইম ফ্ল্যাশ সেল অফার</span>
+            <span id="syncIndicator" style="font-size: 11px; color: var(--green-text);">🟢 লাইভ সিঙ্কড</span>
         </div>
 
         <div class="offers-grid" id="offersGridContainer">
@@ -532,7 +586,7 @@
         </div>
 
         <div class="footer-credit">
-            © SAKURA MARKET OFFERS • SYLHET • STORE PICKUP ONLY
+            © SAKURA MARKET • AMBERKHANA, SYLHET • STORE PICKUP ONLY
         </div>
     </div>
 
@@ -568,7 +622,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">অতিরিক্ত কোনো নোট/পরিমাণ <span class="optional-badge">ঐচ্ছিক</span></label>
+                    <label class="form-label">নোট/পরিমাণ <span class="optional-badge">ঐচ্ছিক</span></label>
                     <input type="text" id="custNote" class="form-control" placeholder="যেমন: ১ ঘণ্টার মধ্যে আসছি">
                 </div>
 
@@ -580,42 +634,39 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPukeTpE8t96oiRQ1PRtqXpf6iDKaezyO3suOnru_Nl6JYKrcmaRUT7JLEEYCiizrn/exec";
+        // REPLACE WITH YOUR NEW GOOGLE SHEETS WEB APP URL
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx4sFfS-XrwPP9_w3S_6Y3USnaYJ9Rk_lD3oD-RUE9qCfhqwTLeYD7n_73k-H5sAIF7/exec";
         const SHOP_WHATSAPP_NUMBER = "8801789504376";
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW failed', err));
-        }
-
-        let deferredPrompt;
-        const installBtn = document.getElementById('installWidgetBtn');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBtn.style.display = 'flex';
-        });
-
-        function installWidgetApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
-            } else {
-                alert("📱 উইজেট সেভ করতে ব্রাউজারের মেনু থেকে 'Add to Home Screen' সিলেক্ট করুন!");
-            }
-        }
-
         const ADMIN_PASS = "28282805";
+
         let offers = [];
         let isAdminMode = false;
         let uploadedBase64Image = "";
 
         document.addEventListener('DOMContentLoaded', () => {
+            initSakuraPetals();
+            loadOffersFromCache();
             fetchOffersFromCloud();
-            setInterval(fetchOffersFromCloud, 30000); // 30s auto fetch
-            setInterval(updateTimersUI, 1000); // 1s live countdown
+            setInterval(fetchOffersFromCloud, 15000); // 15s sync interval
+            setInterval(updateTimersUI, 1000); // 1s live countdown clock
         });
 
+        /* Fast Local Cache Management */
+        function loadOffersFromCache() {
+            const cached = localStorage.getItem('sakura_offers_japan_cache');
+            if (cached) {
+                try {
+                    offers = JSON.parse(cached);
+                    renderOffers();
+                } catch(e) {}
+            }
+        }
+
+        function saveOffersToCache(data) {
+            localStorage.setItem('sakura_offers_japan_cache', JSON.stringify(data));
+        }
+
+        /* Image Local Preview Base64 */
         function previewLocalImage(event) {
             const file = event.target.files[0];
             if (file) {
@@ -639,15 +690,25 @@
             }
         }
 
+        /* Fetch Cloud Offers */
         function fetchOffersFromCloud() {
-            if (!SCRIPT_URL || SCRIPT_URL.includes("YOUR_APPS")) return;
+            if (!SCRIPT_URL || SCRIPT_URL.includes("YOUR_NEW_GOOGLE")) return;
             
             fetch(SCRIPT_URL + "?action=getOffers")
-                .then(res => res.json())
-                .then(data => {
-                    offers = data || [];
-                    renderOffers();
-                    document.getElementById('syncIndicator').innerText = "🟢 লাইভ সিঙ্কড";
+                .then(res => res.text())
+                .then(text => {
+                    try {
+                        const data = JSON.parse(text);
+                        if (Array.isArray(data)) {
+                            offers = data;
+                            saveOffersToCache(offers);
+                            renderOffers();
+                            document.getElementById('syncIndicator').innerText = "🟢 লাইভ সিঙ্কড";
+                        }
+                    } catch(err) {
+                        console.warn("Raw non-JSON response:", text);
+                        document.getElementById('syncIndicator').innerText = "🔴 পার্সিং ট্রাই";
+                    }
                 })
                 .catch(err => {
                     console.error("Cloud fetch error", err);
@@ -655,6 +716,7 @@
                 });
         }
 
+        /* Admin Mode Toggle */
         function requestAdminAccess() {
             if (isAdminMode) {
                 isAdminMode = false;
@@ -674,6 +736,7 @@
             }
         }
 
+        /* Add New Offer */
         function handleAddOffer(e) {
             e.preventDefault();
 
@@ -692,14 +755,19 @@
                 timestamp: new Date().toLocaleString('bn-BD'),
                 createdAt: now,
                 durationMinutes: durationMinutes,
-                expiryTime: expiryTimestamp,
+                expiryTime: expiryTimestamp, // Fixed exact target timestamp
                 name: name,
                 oldPrice: oldPrice,
                 newPrice: newPrice,
-                badge: document.getElementById('itemBadge').value.trim() || 'LIMITED FLASH SALE',
+                badge: document.getElementById('itemBadge').value.trim() || 'SAKURA FLASH SALE',
                 desc: document.getElementById('itemDesc').value.trim(),
                 img: finalImage
             };
+
+            // Instant UI update
+            offers.unshift(newOffer);
+            saveOffersToCache(offers);
+            renderOffers();
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -710,25 +778,31 @@
                 document.getElementById('offerForm').reset();
                 uploadedBase64Image = "";
                 alert(`✅ অফার পাবলিশ করা হয়েছে! (${durationMinutes} মিনিটের কাউন্টডাউন শুরু)`);
-                setTimeout(fetchOffersFromCloud, 1500);
+                setTimeout(fetchOffersFromCloud, 1000);
             }).catch(err => {
                 alert("⚠️ ক্লাউডে পোস্ট করতে সমস্যা হয়েছে!");
             });
         }
 
+        /* Delete Offer */
         function deleteOffer(id) {
             if (confirm('⚠️ গুগল শিট থেকে অফারটি মুছে ফেলতে চান?')) {
+                offers = offers.filter(o => String(o.id) !== String(id));
+                saveOffersToCache(offers);
+                renderOffers();
+
                 fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: id, action: 'delete' })
                 }).then(() => {
-                    setTimeout(fetchOffersFromCloud, 1500);
+                    setTimeout(fetchOffersFromCloud, 1000);
                 });
             }
         }
 
+        /* Modal Handlers */
         function openOrderModal(productName, productPrice, expiryTime) {
             if (expiryTime && Date.now() > Number(expiryTime)) {
                 alert("❌ দুঃখিত! এই অফারের সময়সীমা শেষ হয়ে গেছে।");
@@ -746,6 +820,7 @@
             document.getElementById('whatsappOrderForm').reset();
         }
 
+        /* Submit WhatsApp Order */
         function submitWhatsAppOrder(e) {
             e.preventDefault();
 
@@ -776,13 +851,13 @@
             closeOrderModal();
         }
 
+        /* Live Timers Update */
         function updateTimersUI() {
             const now = Date.now();
             offers.forEach(o => {
                 const timerEl = document.getElementById(`timer-${o.id}`);
                 const btnEl = document.getElementById(`btn-order-${o.id}`);
 
-                // fallback mechanism if Google Sheet doesn't return expiryTime
                 let expiry = Number(o.expiryTime);
                 if (!expiry && o.createdAt && o.durationMinutes) {
                     expiry = Number(o.createdAt) + (Number(o.durationMinutes) * 60 * 1000);
@@ -807,16 +882,14 @@
                         const secs = totalSecs % 60;
                         if (timerEl) {
                             timerEl.innerText = `⏳ বাকি: ${mins}মি ${secs < 10 ? '0' : ''}${secs}সে`;
-                            timerEl.style.color = "var(--accent-gold)";
+                            timerEl.style.color = "var(--sakura-gold)";
                         }
                     }
-                } else if (timerEl) {
-                    // Default fallback if time is missing
-                    timerEl.innerText = "⏳ ৩০ মিনিট";
                 }
             });
         }
 
+        /* Render Offers Grid */
         function renderOffers() {
             const container = document.getElementById('offersGridContainer');
 
@@ -828,7 +901,7 @@
             const now = Date.now();
 
             container.innerHTML = offers.map(o => {
-                let imgContent = o.img ? `<img src="${o.img}" alt="${o.name}">` : `<i class="fa-solid fa-tag fa-3x" style="color:var(--accent-gold);"></i>`;
+                let imgContent = o.img ? `<img src="${o.img}" alt="${o.name}">` : `<i class="fa-solid fa-tag fa-3x" style="color:var(--sakura-gold);"></i>`;
                 let deleteBtnHtml = isAdminMode ? `<button class="btn-delete-item" onclick="deleteOffer('${o.id}')" style="display:block;"><i class="fa-solid fa-trash"></i></button>` : '';
 
                 const safeName = o.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -842,7 +915,7 @@
 
                 return `
                     <div class="offer-poster-card">
-                        <div class="poster-badge">${o.badge || 'FLASH SALE'}</div>
+                        <div class="poster-badge">${o.badge || 'SAKURA FLASH'}</div>
                         <div class="timer-badge" id="timer-${o.id}">ক্যালকুলেট হচ্ছে...</div>
                         <div class="poster-img-box">${imgContent}</div>
                         <div class="poster-content">
@@ -867,8 +940,74 @@
                 `;
             }).join('');
 
-            // Call timer update immediately after render
             updateTimersUI();
+        }
+
+        /* Sakura Falling Petals Animation Canvas */
+        function initSakuraPetals() {
+            const canvas = document.getElementById('sakura-canvas');
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const petals = Array.from({ length: 25 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 8 + 4,
+                speedY: Math.random() * 1.2 + 0.5,
+                speedX: Math.random() * 0.8 - 0.4,
+                angle: Math.random() * 360,
+                spin: Math.random() * 0.02 - 0.01
+            }));
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                petals.forEach(p => {
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.angle);
+                    ctx.fillStyle = 'rgba(255, 182, 193, 0.4)';
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, p.size, p.size / 2, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.angle += p.spin;
+
+                    if (p.y > canvas.height) {
+                        p.y = -10;
+                        p.x = Math.random() * canvas.width;
+                    }
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        /* PWA App Install Prompt */
+        let deferredPrompt;
+        const installBtn = document.getElementById('installWidgetBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+        });
+
+        function installWidgetApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+            } else {
+                alert("📱 উইজেট সেv করতে ব্রাউজারের মেনু থেকে 'Add to Home Screen' সিলেক্ট করুন!");
+            }
         }
     </script>
 </body>
