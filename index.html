@@ -3,424 +3,400 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>さくら Sakura Market - 日本 Flash Offers</title>
+    <title>櫻市場 サクラマーケット - ফ্ল্যাশ সেল</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@600;900&family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&family=Space+Mono:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0a060a;
-            --bg-card: rgba(26, 16, 26, 0.85);
-            --border-pink: #e11d48;
-            --border-subtle: #3d1b28;
-            --sakura-pink: #ff758f;
-            --sakura-gold: #facc15;
-            --text-light: #fff0f5;
-            --text-muted: #a3889b;
-            --green-text: #4ade80;
-            --red-text: #f87171;
+            --jp-red: #d92323;
+            --jp-yellow: #facc15;
+            --jp-black: #0c0a09;
+            --jp-card-bg: #141010;
+            --text-light: #ffffff;
+            --text-muted: #a8a29e;
+            --green-text: #22c55e;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Noto Sans JP', 'SolaimanLipi', sans-serif;
+            font-family: 'Noto Sans JP', 'Segoe UI', Tahoma, sans-serif;
         }
 
         body {
-            background-color: var(--bg-dark);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(225, 29, 72, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(250, 204, 21, 0.1) 0%, transparent 40%);
+            background-color: var(--jp-black);
             color: var(--text-light);
-            padding: 16px;
+            padding: 10px;
             min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Sakura Falling Petals Canvas */
-        #sakura-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
         }
 
         .portal-container {
-            max-width: 620px;
+            max-width: 1200px; /* 4ta item pasapashi rakhar jonno boro width */
             margin: 0 auto;
-            position: relative;
-            z-index: 1;
         }
 
-        /* Japanese Style Header */
+        /* হেডার */
         .app-header {
-            background: linear-gradient(145deg, #1f0812 0%, #12050b 100%);
-            border: 1.5px solid var(--border-pink);
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-bottom: 24px;
-            box-shadow: 0 10px 30px rgba(225, 29, 72, 0.25);
-            backdrop-filter: blur(8px);
-            position: relative;
-        }
-
-        .header-top {
+            background: linear-gradient(180deg, #220808 0%, #0c0a09 100%);
+            border: 1.5px solid var(--jp-yellow);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(217, 35, 35, 0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-logo-japan {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--border-pink), #be123c);
-            color: #ffffff;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            font-weight: 900;
-            font-family: 'Noto Serif JP', serif;
-            box-shadow: 0 0 15px rgba(225, 29, 72, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .brand-title-box {
+        .brand-box {
             display: flex;
             flex-direction: column;
         }
 
         .brand-title {
-            font-size: 20px;
+            font-size: 15px;
             font-weight: 900;
-            color: #ffffff;
-            letter-spacing: 0.5px;
+            color: var(--jp-yellow);
+        }
+
+        .brand-sub {
+            font-size: 10px;
+            color: #fca5a5;
+        }
+
+        .header-actions {
             display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .brand-subtitle {
-            font-size: 11px;
-            color: var(--sakura-gold);
-            letter-spacing: 0.8px;
-        }
-
-        .pickup-notice {
-            background: rgba(225, 29, 72, 0.12);
-            border: 1px dashed var(--sakura-pink);
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            color: #fecdd3;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            line-height: 1.5;
-        }
-
-        .btn-admin-access {
-            background: rgba(250, 204, 21, 0.15);
-            color: var(--sakura-gold);
-            border: 1px solid var(--sakura-gold);
-            padding: 7px 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-            transition: all 0.2s ease;
-        }
-
-        .btn-admin-access:hover {
-            background: var(--sakura-gold);
-            color: #000;
-        }
-
-        .btn-install-widget {
-            width: 100%;
-            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 13.5px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             gap: 8px;
-            box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);
+            align-items: center;
         }
 
-        /* Admin Setup Form */
+        .btn-action-admin {
+            background: var(--jp-yellow);
+            color: var(--jp-black);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        /* অ্যাডমিন প্যানেল */
         .admin-panel {
             display: none;
-            background: var(--bg-card);
-            border: 1px solid var(--sakura-gold);
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 24px;
-            box-shadow: 0 0 20px rgba(250, 204, 21, 0.15);
+            background: var(--jp-card-bg);
+            border: 1.5px solid var(--jp-yellow);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
         }
 
         .panel-title {
-            font-size: 15px;
-            font-weight: bold;
-            color: var(--sakura-gold);
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 12px;
+            font-weight: 900;
+            color: var(--jp-yellow);
+            margin-bottom: 8px;
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 6px;
         }
 
         .form-label {
             display: block;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 10px;
+            font-weight: bold;
             color: var(--text-muted);
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
 
         .form-control {
             width: 100%;
-            background: #120810;
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            padding: 10px 12px;
-            color: var(--text-light);
-            font-size: 13.5px;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 6px;
+            color: #fff;
+            font-size: 11px;
             outline: none;
-        }
-
-        .form-control:focus {
-            border-color: var(--border-pink);
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 6px;
         }
 
         .btn-submit {
             width: 100%;
-            background: var(--sakura-gold);
-            color: #1a0810;
+            background: var(--jp-yellow);
+            color: #000;
             border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: bold;
+            padding: 7px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 900;
             cursor: pointer;
-            margin-top: 6px;
-            transition: transform 0.2s ease;
+            margin-top: 4px;
         }
 
-        .btn-submit:active {
-            transform: scale(0.98);
-        }
-
-        /* Offer Cards Grid Section */
+        /* ৪ কলাম গ্রিড লেআউট */
         .offers-section-title {
-            font-size: 17px;
-            font-weight: 800;
-            margin-bottom: 16px;
+            font-size: 13px;
+            font-weight: 900;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            color: var(--text-light);
-            border-bottom: 2px dashed var(--border-subtle);
-            padding-bottom: 10px;
+            border-bottom: 1.5px solid var(--jp-yellow);
+            padding-bottom: 4px;
         }
 
         .offers-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            grid-template-columns: repeat(4, 1fr); /* এক সারিতে ৪টি কার্ড */
+            gap: 10px;
         }
 
+        @media (max-width: 900px) {
+            .offers-grid {
+                grid-template-columns: repeat(2, 1fr); /* ট্যাবলেটে ২টি */
+            }
+        }
         @media (max-width: 500px) {
             .offers-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr; /* মোবাইল ফোনে ১টি করে */
             }
         }
 
-        .offer-poster-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
+        /* ছোট ও প্রিমিয়াম পোস্টার কার্ড */
+        .jp-poster-card {
+            background: var(--jp-black);
+            border: 2px solid var(--jp-yellow);
+            border-radius: 10px;
             overflow: hidden;
             position: relative;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.7);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: transform 0.2s ease, border-color 0.2s ease;
         }
 
-        .offer-poster-card:hover {
-            border-color: var(--border-pink);
+        .poster-top-banner {
+            background: var(--jp-red);
+            padding: 8px 8px 4px 8px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .poster-badge {
+        .timer-badge-jp {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background: linear-gradient(135deg, var(--border-pink), #be123c);
-            color: #fff;
-            padding: 4px 9px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: bold;
-            z-index: 2;
-            letter-spacing: 0.5px;
-        }
-
-        .timer-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(10, 6, 10, 0.92);
-            border: 1px solid var(--sakura-gold);
-            color: var(--sakura-gold);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 10.5px;
-            font-weight: bold;
+            top: 4px;
+            left: 4px;
+            background: #000;
+            border: 1px solid var(--jp-yellow);
+            color: var(--jp-yellow);
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 8.5px;
+            font-weight: 900;
             font-family: 'Space Mono', monospace;
-            z-index: 2;
+            z-index: 3;
         }
 
-        .poster-img-box {
-            width: 100%;
-            height: 180px;
+        .discount-circle-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 30px;
+            height: 30px;
+            background: var(--jp-yellow);
+            color: var(--jp-red);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            line-height: 1;
+            z-index: 3;
+        }
+
+        .discount-circle-badge .percent {
+            font-size: 10px;
+        }
+
+        .discount-circle-badge .off-text {
+            font-size: 6px;
+        }
+
+        .poster-img-frame {
+            width: 75%;
             background: #ffffff;
+            border: 1.5px solid var(--jp-yellow);
+            border-radius: 8px;
+            padding: 4px;
+            margin-top: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-muted);
-            overflow: hidden;
-            padding: 10px;
+            position: relative;
+            height: 90px; /* একদম ছোট প্রিমিয়াম সাইজ */
         }
 
-        .poster-img-box img {
+        .poster-img-frame img {
             max-width: 100%;
             max-height: 100%;
-            width: auto;
-            height: auto;
             object-fit: contain;
-            display: block;
         }
 
-        .poster-content {
-            padding: 14px;
-        }
-
-        .poster-item-name {
-            font-size: 15.5px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 6px;
-        }
-
-        .poster-desc {
-            font-size: 11.5px;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
-
-        .price-row {
+        .stamp-seal {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--jp-red);
+            border-radius: 50%;
+            color: var(--jp-red);
+            font-size: 5.5px;
+            font-weight: 900;
             display: flex;
-            align-items: baseline;
-            gap: 10px;
-            margin-bottom: 12px;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-15deg);
+            background: rgba(255,255,255,0.9);
         }
 
-        .old-price {
-            font-size: 13px;
-            color: var(--red-text);
+        .poster-item-info {
+            background: #000;
+            border-top: 1px solid var(--jp-yellow);
+            border-bottom: 1px solid var(--jp-yellow);
+            padding: 6px;
+            text-align: center;
+        }
+
+        .poster-main-title {
+            font-size: 11.5px;
+            font-weight: 900;
+            color: var(--jp-yellow);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .poster-desc-bn {
+            font-size: 9.5px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .poster-price-section {
+            background: #0c0a09;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .price-compare-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+        }
+
+        .old-price-strike {
+            color: #f87171;
             text-decoration: line-through;
             font-family: 'Space Mono', monospace;
         }
 
-        .new-price {
-            font-size: 19px;
+        .save-pill-badge {
+            background: #15803d;
+            color: #fff;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-size: 8.5px;
+            font-weight: bold;
+        }
+
+        .special-price-box {
+            background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+            border-radius: 6px;
+            padding: 2px 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .special-label {
+            color: #000;
+            font-size: 9.5px;
             font-weight: 900;
-            color: var(--green-text);
+        }
+
+        .special-amount {
+            color: var(--jp-red);
+            font-size: 16px;
+            font-weight: 900;
             font-family: 'Space Mono', monospace;
         }
 
-        .btn-card-action {
-            display: flex;
-            gap: 6px;
-        }
-
-        .btn-order {
-            flex: 1;
-            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
-            color: #fff;
+        .btn-order-poster {
+            width: 100%;
+            background: var(--jp-red);
+            color: white;
             border: none;
-            padding: 9px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: bold;
+            padding: 6px;
+            border-radius: 5px;
+            font-size: 10.5px;
+            font-weight: 900;
             cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
         }
 
-        .btn-order:disabled, .btn-order.expired {
-            background: #2a1a24 !important;
-            color: #886a7c !important;
+        .btn-order-poster:disabled, .btn-order-poster.expired {
+            background: #334155 !important;
+            color: #94a3b8 !important;
             cursor: not-allowed !important;
-            opacity: 0.6;
         }
 
-        .btn-delete-item {
+        .btn-delete-poster {
             background: #dc2626;
             color: white;
             border: none;
-            padding: 8px 10px;
-            border-radius: 8px;
-            font-size: 12px;
+            padding: 4px;
+            border-radius: 4px;
+            font-size: 9.5px;
             cursor: pointer;
+            margin-top: 3px;
             display: none;
+            width: 100%;
+            font-weight: bold;
         }
 
         .no-offers {
-            grid-column: span 2;
+            grid-column: span 4;
             text-align: center;
-            padding: 40px;
+            padding: 25px;
             color: var(--text-muted);
-            background: var(--bg-card);
-            border-radius: 16px;
-            border: 1px dashed var(--border-subtle);
+            background: var(--jp-card-bg);
+            border-radius: 10px;
+            border: 1px dashed var(--jp-yellow);
         }
 
-        /* Order Modal */
+        /* মোডাল */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -428,54 +404,43 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.82);
+            background: rgba(0, 0, 0, 0.85);
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            padding: 16px;
-            backdrop-filter: blur(5px);
+            padding: 10px;
         }
 
         .modal-card {
-            background: #1a0c14;
-            border: 1px solid var(--border-pink);
-            border-radius: 20px;
+            background: #141010;
+            border: 2px solid var(--jp-yellow);
+            border-radius: 10px;
             width: 100%;
-            max-width: 450px;
-            padding: 22px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+            max-width: 360px;
+            padding: 14px;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            border-bottom: 1px solid var(--border-subtle);
-            padding-bottom: 10px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 4px;
         }
 
         .modal-title {
-            font-size: 16.5px;
-            font-weight: bold;
-            color: var(--sakura-gold);
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--jp-yellow);
         }
 
         .btn-close-modal {
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 20px;
+            font-size: 14px;
             cursor: pointer;
-        }
-
-        .optional-badge {
-            font-size: 10px;
-            background: rgba(163, 136, 155, 0.2);
-            color: var(--text-muted);
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 4px;
         }
 
         .btn-whatsapp-send {
@@ -483,118 +448,101 @@
             background: #25D366;
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14.5px;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 12px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-top: 14px;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            gap: 6px;
+            margin-top: 6px;
         }
 
         .footer-credit {
             text-align: center;
-            font-size: 11px;
+            font-size: 9.5px;
             color: var(--text-muted);
-            margin-top: 36px;
-            border-top: 1px solid var(--border-subtle);
-            padding-top: 16px;
-            letter-spacing: 0.5px;
+            margin-top: 15px;
+            border-top: 1px dashed #333;
+            padding-top: 8px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Sakura Petals Canvas Animation -->
-    <canvas id="sakura-canvas"></canvas>
-
     <div class="portal-container">
+        <!-- হেডার -->
         <header class="app-header">
-            <div class="header-top">
-                <div class="brand">
-                    <div class="brand-logo-japan">咲</div>
-                    <div class="brand-title-box">
-                        <div class="brand-title">সাকুরা মার্কেট 🌸</div>
-                        <div class="brand-subtitle">SAKURA MARKET • AMBERKHANA, SYLHET</div>
-                    </div>
-                </div>
-                <button class="btn-admin-access" onclick="requestAdminAccess()"><i class="fa-solid fa-lock"></i> অ্যাডমিন</button>
+            <div class="brand-box">
+                <div class="brand-title">🌸 সাকুরা মার্কেট (আম্বরখানা, সিলেট)</div>
+                <div class="brand-sub">১ ঘণ্টার মধ্যে দোকান থেকে পিকআপ করতে হবে</div>
             </div>
-
-            <div class="pickup-notice">
-                <i class="fa-solid fa-triangle-exclamation" style="color: var(--sakura-pink);"></i>
-                <span><strong>শর্ত:</strong> হোম ডেলিভারি নেই। অর্ডার করার পর অবশ্যই <strong>১ ঘণ্টার মধ্যে</strong> দোকানে এসে পণ্য সংগ্রহ করতে হবে, অন্যথায় অর্ডার বাতিল হবে।</span>
+            <div class="header-actions">
+                <button class="btn-action-admin" onclick="requestAdminAccess()"><i class="fa-solid fa-lock"></i> অ্যাডমিন</button>
             </div>
-
-            <button class="btn-install-widget" id="installWidgetBtn" onclick="installWidgetApp()">
-                <i class="fa-solid fa-mobile-screen-button"></i> মোবাইল স্ক্রিনে উইজেট হিসেবে সেভ করুন
-            </button>
         </header>
 
-        <!-- Admin Setup Form Panel -->
+        <!-- অ্যাডমিন প্যানেল -->
         <div class="admin-panel" id="adminPanel">
-            <div class="panel-title"><i class="fa-solid fa-cloud-arrow-up"></i> নতুন অফার পোস্ট করুন (Google Sheets)</div>
+            <div class="panel-title"><i class="fa-solid fa-cloud-arrow-up"></i> নতুন অফার পোস্ট করুন</div>
             <form id="offerForm" onsubmit="handleAddOffer(event)">
                 <div class="form-group">
-                    <label class="form-label">পণ্যের নাম (Item Name)</label>
-                    <input type="text" id="itemName" class="form-control" placeholder="যেমন: জাপানি গ্রিন টি" required>
+                    <label class="form-label">পণ্যের নাম</label>
+                    <input type="text" id="itemName" class="form-control" placeholder="যেমন: মিনিকেট চাল ২৫ কেজি" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">পূর্বের দাম (Old Price ৳)</label>
-                        <input type="number" id="itemOldPrice" class="form-control" placeholder="200" required>
+                        <label class="form-label">আগের দাম (৳)</label>
+                        <input type="number" id="itemOldPrice" class="form-control" placeholder="২৮০০" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">আজকের সেল দাম (New Price ৳)</label>
-                        <input type="number" id="itemNewPrice" class="form-control" placeholder="190" required>
+                        <label class="form-label">অফার দাম (৳)</label>
+                        <input type="number" id="itemNewPrice" class="form-control" placeholder="২৫৫০" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">সময় (মিনিট)</label>
+                        <input type="number" id="itemDuration" class="form-control" value="60" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">সংক্ষিপ্ত বিবরণ</label>
+                        <input type="text" id="itemDesc" class="form-control" placeholder="সেরা মানের">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">অফারের সময়সীমা (Minutes)</label>
-                    <input type="number" id="itemDuration" class="form-control" value="30" placeholder="কত মিনিট ছাড় থাকবে?" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">ছাড়ের ব্যাজ (Tag)</label>
-                    <input type="text" id="itemBadge" class="form-control" value="SAKURA FLASH SALE">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">বিবরণ (Description)</label>
-                    <input type="text" id="itemDesc" class="form-control" placeholder="সীমিত সময়ের জন্য বিশেষ ছাড়।">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">পণ্যের ছবি (URL অথবা ব্রাউজ করুন)</label>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="url" id="itemImgUrl" class="form-control" placeholder="https://image-link.com" style="flex: 2;">
-                        <input type="file" id="itemImgFile" accept="image/*" class="form-control" style="flex: 1; padding: 6px; font-size: 11px;" onchange="previewLocalImage(event)">
+                    <label class="form-label">ছবির লিংক (URL অথবা ফাইল)</label>
+                    <div style="display: flex; gap: 4px;">
+                        <input type="url" id="itemImgUrl" class="form-control" placeholder="https://..." style="flex: 2;">
+                        <input type="file" id="itemImgFile" accept="image/*" class="form-control" style="flex: 1; padding: 3px; font-size: 9px;" onchange="previewLocalImage(event)">
                     </div>
                 </div>
-                <button type="submit" class="btn-submit"><i class="fa-solid fa-cloud"></i> পাবলিশ করুন</button>
+                <button type="submit" class="btn-submit">পাবলিশ করুন</button>
             </form>
         </div>
 
         <div class="offers-section-title">
-            <span><i class="fa-solid fa-stopwatch" style="color: var(--sakura-gold);"></i> রিয়েল-টাইম ফ্ল্যাশ সেল অফার</span>
-            <span id="syncIndicator" style="font-size: 11px; color: var(--green-text);">🟢 লাইভ সিঙ্কড</span>
+            <span><i class="fa-solid fa-fire" style="color: var(--jp-yellow);"></i> লাইভ ফ্ল্যাশ সেল অফার</span>
+            <span id="syncIndicator" style="font-size: 10px; color: var(--green-text);">🟢 সিঙ্কড</span>
         </div>
 
+        <!-- ৪ কলাম গ্রিড কন্টেইনার -->
         <div class="offers-grid" id="offersGridContainer">
-            <div class="no-offers">গুগল শিট থেকে ডাটা লোড হচ্ছে...</div>
+            <div class="no-offers">ডাটা লোড হচ্ছে...</div>
         </div>
 
         <div class="footer-credit">
-            © SAKURA MARKET • AMBERKHANA, SYLHET • STORE PICKUP ONLY
+            📍 সাকুরা মার্কেট • আম্বরখানা, সিলেট • 📞 01789-504376 • STORE PICKUP ONLY
         </div>
     </div>
 
-    <!-- Order Details Modal -->
+    <!-- অর্ডার মোডাল -->
     <div class="modal-overlay" id="orderModal">
         <div class="modal-card">
             <div class="modal-header">
-                <div class="modal-title" id="modalProductName"><i class="fa-solid fa-cart-shopping"></i> অর্ডার ডিটেইলস</div>
+                <div class="modal-title" id="modalProductName">অর্ডার নিশ্চিত করুন</div>
                 <button class="btn-close-modal" onclick="closeOrderModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="whatsappOrderForm" onsubmit="submitWhatsAppOrder(event)">
@@ -602,28 +550,18 @@
                 <input type="hidden" id="selectedProductPrice">
 
                 <div class="form-group">
-                    <label class="form-label">আপনার নাম (Customer Name) *</label>
-                    <input type="text" id="custName" class="form-control" placeholder="আপনার পুরো নাম লিখুন" required>
+                    <label class="form-label">আপনার নাম *</label>
+                    <input type="text" id="custName" class="form-control" placeholder="নাম লিখুন" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">ফোন নম্বর (Phone Number) *</label>
+                    <label class="form-label">ফোন নম্বর *</label>
                     <input type="tel" id="custPhone" class="form-control" placeholder="017XXXXXXXX" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">মেম্বারশিপ কোড/আইডি <span class="optional-badge">ঐচ্ছিক</span></label>
-                    <input type="text" id="custMemberCode" class="form-control" placeholder="যেমন: SKR-2026-1001">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">ভাউচার কোড <span class="optional-badge">ঐচ্ছিক</span></label>
-                    <input type="text" id="custVoucherCode" class="form-control" placeholder="যেমন: SAKURA-50000">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">নোট/পরিমাণ <span class="optional-badge">ঐচ্ছিক</span></label>
-                    <input type="text" id="custNote" class="form-control" placeholder="যেমন: ১ ঘণ্টার মধ্যে আসছি">
+                    <label class="form-label">মেম্বারশিপ ID (ঐচ্ছিক)</label>
+                    <input type="text" id="custMemberCode" class="form-control" placeholder="যেমন: SKR-1001">
                 </div>
 
                 <button type="submit" class="btn-whatsapp-send">
@@ -634,8 +572,7 @@
     </div>
 
     <script>
-        // REPLACE WITH YOUR NEW GOOGLE SHEETS WEB APP URL
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx4sFfS-XrwPP9_w3S_6Y3USnaYJ9Rk_lD3oD-RUE9qCfhqwTLeYD7n_73k-H5sAIF7/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxqk0qaU_NOloPUFKybJvt2LakpQXw2ZUiAJbpM7MO1H7IKJ32xEY-s28USBjlDCKIi/exec";
         const SHOP_WHATSAPP_NUMBER = "8801789504376";
         const ADMIN_PASS = "28282805";
 
@@ -644,16 +581,14 @@
         let uploadedBase64Image = "";
 
         document.addEventListener('DOMContentLoaded', () => {
-            initSakuraPetals();
             loadOffersFromCache();
             fetchOffersFromCloud();
-            setInterval(fetchOffersFromCloud, 15000); // 15s sync interval
-            setInterval(updateTimersUI, 1000); // 1s live countdown clock
+            setInterval(fetchOffersFromCloud, 15000);
+            setInterval(updateTimersUI, 1000);
         });
 
-        /* Fast Local Cache Management */
         function loadOffersFromCache() {
-            const cached = localStorage.getItem('sakura_offers_japan_cache');
+            const cached = localStorage.getItem('sakura_offers_4col_cache');
             if (cached) {
                 try {
                     offers = JSON.parse(cached);
@@ -663,10 +598,9 @@
         }
 
         function saveOffersToCache(data) {
-            localStorage.setItem('sakura_offers_japan_cache', JSON.stringify(data));
+            localStorage.setItem('sakura_offers_4col_cache', JSON.stringify(data));
         }
 
-        /* Image Local Preview Base64 */
         function previewLocalImage(event) {
             const file = event.target.files[0];
             if (file) {
@@ -675,7 +609,7 @@
                     const img = new Image();
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 500;
+                        const MAX_WIDTH = 250;
                         const scaleSize = MAX_WIDTH / img.width;
                         canvas.width = MAX_WIDTH;
                         canvas.height = img.height * scaleSize;
@@ -690,9 +624,8 @@
             }
         }
 
-        /* Fetch Cloud Offers */
         function fetchOffersFromCloud() {
-            if (!SCRIPT_URL || SCRIPT_URL.includes("YOUR_NEW_GOOGLE")) return;
+            if (!SCRIPT_URL) return;
             
             fetch(SCRIPT_URL + "?action=getOffers")
                 .then(res => res.text())
@@ -703,20 +636,15 @@
                             offers = data;
                             saveOffersToCache(offers);
                             renderOffers();
-                            document.getElementById('syncIndicator').innerText = "🟢 লাইভ সিঙ্কড";
+                            document.getElementById('syncIndicator').innerText = "🟢 সিঙ্কড";
                         }
-                    } catch(err) {
-                        console.warn("Raw non-JSON response:", text);
-                        document.getElementById('syncIndicator').innerText = "🔴 পার্সিং ট্রাই";
-                    }
+                    } catch(err) {}
                 })
                 .catch(err => {
-                    console.error("Cloud fetch error", err);
                     document.getElementById('syncIndicator').innerText = "🔴 অফলাইন";
                 });
         }
 
-        /* Admin Mode Toggle */
         function requestAdminAccess() {
             if (isAdminMode) {
                 isAdminMode = false;
@@ -736,14 +664,13 @@
             }
         }
 
-        /* Add New Offer */
         function handleAddOffer(e) {
             e.preventDefault();
 
             const name = document.getElementById('itemName').value.trim();
             const oldPrice = parseFloat(document.getElementById('itemOldPrice').value) || 0;
             const newPrice = parseFloat(document.getElementById('itemNewPrice').value) || 0;
-            const durationMinutes = parseInt(document.getElementById('itemDuration').value) || 30;
+            const durationMinutes = parseInt(document.getElementById('itemDuration').value) || 60;
             const imgUrlInput = document.getElementById('itemImgUrl').value.trim();
             
             const finalImage = uploadedBase64Image || imgUrlInput || "";
@@ -755,16 +682,15 @@
                 timestamp: new Date().toLocaleString('bn-BD'),
                 createdAt: now,
                 durationMinutes: durationMinutes,
-                expiryTime: expiryTimestamp, // Fixed exact target timestamp
+                expiryTime: expiryTimestamp,
                 name: name,
                 oldPrice: oldPrice,
                 newPrice: newPrice,
-                badge: document.getElementById('itemBadge').value.trim() || 'SAKURA FLASH SALE',
+                badge: 'FLASH SALE',
                 desc: document.getElementById('itemDesc').value.trim(),
                 img: finalImage
             };
 
-            // Instant UI update
             offers.unshift(newOffer);
             saveOffersToCache(offers);
             renderOffers();
@@ -777,16 +703,13 @@
             }).then(() => {
                 document.getElementById('offerForm').reset();
                 uploadedBase64Image = "";
-                alert(`✅ অফার পাবলিশ করা হয়েছে! (${durationMinutes} মিনিটের কাউন্টডাউন শুরু)`);
+                alert(`✅ অফার পাবলিশ করা হয়েছে!`);
                 setTimeout(fetchOffersFromCloud, 1000);
-            }).catch(err => {
-                alert("⚠️ ক্লাউডে পোস্ট করতে সমস্যা হয়েছে!");
             });
         }
 
-        /* Delete Offer */
         function deleteOffer(id) {
-            if (confirm('⚠️ গুগল শিট থেকে অফারটি মুছে ফেলতে চান?')) {
+            if (confirm('⚠️ অফারটি মুছে ফেলতে চান?')) {
                 offers = offers.filter(o => String(o.id) !== String(id));
                 saveOffersToCache(offers);
                 renderOffers();
@@ -796,13 +719,10 @@
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: id, action: 'delete' })
-                }).then(() => {
-                    setTimeout(fetchOffersFromCloud, 1000);
-                });
+                }).then(() => setTimeout(fetchOffersFromCloud, 1000));
             }
         }
 
-        /* Modal Handlers */
         function openOrderModal(productName, productPrice, expiryTime) {
             if (expiryTime && Date.now() > Number(expiryTime)) {
                 alert("❌ দুঃখিত! এই অফারের সময়সীমা শেষ হয়ে গেছে।");
@@ -811,7 +731,7 @@
 
             document.getElementById('selectedProductName').value = productName;
             document.getElementById('selectedProductPrice').value = productPrice;
-            document.getElementById('modalProductName').innerHTML = `<i class="fa-solid fa-cart-shopping"></i> ${productName} (৳${productPrice})`;
+            document.getElementById('modalProductName').innerHTML = `${productName} (৳${productPrice})`;
             document.getElementById('orderModal').style.display = 'flex';
         }
 
@@ -820,7 +740,6 @@
             document.getElementById('whatsappOrderForm').reset();
         }
 
-        /* Submit WhatsApp Order */
         function submitWhatsAppOrder(e) {
             e.preventDefault();
 
@@ -829,21 +748,17 @@
             const cName = document.getElementById('custName').value.trim();
             const cPhone = document.getElementById('custPhone').value.trim();
             const cMember = document.getElementById('custMemberCode').value.trim() || "নাই";
-            const cVoucher = document.getElementById('custVoucherCode').value.trim() || "নাই";
-            const cNote = document.getElementById('custNote').value.trim() || "কোনো বিশেষ নির্দেশ নেই";
             const orderTime = new Date().toLocaleString('bn-BD', { timeZone: 'Asia/Dhaka' });
 
-            const message = `🌸 *সাকুরা মার্কেট - পিকআপ অর্ডার* 🌸\n` +
+            const message = `🌸 *সাকুরা মার্কেট - অর্ডার* 🌸\n` +
                 `------------------------------------\n` +
-                `⏱️ *অর্ডারের সময়:* ${orderTime}\n` +
-                `⚠️ *শর্ত:* ১ ঘণ্টার মধ্যে দোকানে এসে সংগ্ৰহ করতে হবে।\n\n` +
+                `⏱️ *সময়:* ${orderTime}\n` +
+                `⚠️ *শর্ত:* ১ ঘণ্টার মধ্যে দোকান থেকে নিতে হবে।\n\n` +
                 `🛒 *পণ্য:* ${pName}\n` +
                 `💰 *দাম:* ৳${pPrice}\n\n` +
                 `👤 *নাম:* ${cName}\n` +
                 `📞 *ফোন:* ${cPhone}\n` +
                 `💳 *মেম্বারশিপ ID:* ${cMember}\n` +
-                `🎟️ *ভাউচার কোড:* ${cVoucher}\n` +
-                `📝 *নোট:* ${cNote}\n` +
                 `------------------------------------`;
 
             const waUrl = `https://wa.me/${SHOP_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
@@ -851,7 +766,6 @@
             closeOrderModal();
         }
 
-        /* Live Timers Update */
         function updateTimersUI() {
             const now = Date.now();
             offers.forEach(o => {
@@ -866,43 +780,35 @@
                 if (expiry) {
                     const diff = expiry - now;
                     if (diff <= 0) {
-                        if (timerEl) {
-                            timerEl.innerText = "⏰ অফার শেষ";
-                            timerEl.style.color = "var(--red-text)";
-                            timerEl.style.borderColor = "var(--red-text)";
-                        }
+                        if (timerEl) timerEl.innerText = "⏰ শেষ";
                         if (btnEl && !btnEl.disabled) {
                             btnEl.disabled = true;
                             btnEl.classList.add('expired');
-                            btnEl.innerHTML = `<i class="fa-solid fa-lock"></i> অফার শেষ (Expired)`;
+                            btnEl.innerHTML = `অফার শেষ`;
                         }
                     } else {
                         const totalSecs = Math.floor(diff / 1000);
                         const mins = Math.floor(totalSecs / 60);
                         const secs = totalSecs % 60;
-                        if (timerEl) {
-                            timerEl.innerText = `⏳ বাকি: ${mins}মি ${secs < 10 ? '0' : ''}${secs}সে`;
-                            timerEl.style.color = "var(--sakura-gold)";
-                        }
+                        if (timerEl) timerEl.innerText = `⏳ ${mins}মি ${secs < 10 ? '0' : ''}${secs}সে`;
                     }
                 }
             });
         }
 
-        /* Render Offers Grid */
         function renderOffers() {
             const container = document.getElementById('offersGridContainer');
 
             if (offers.length === 0) {
-                container.innerHTML = `<div class="no-offers"><i class="fa-solid fa-box-open fa-2x" style="margin-bottom:8px;"></i><br>বর্তমানে ক্লাউডে কোনো অফার নেই।</div>`;
+                container.innerHTML = `<div class="no-offers">বর্তমানে কোনো অফার নেই।</div>`;
                 return;
             }
 
             const now = Date.now();
 
             container.innerHTML = offers.map(o => {
-                let imgContent = o.img ? `<img src="${o.img}" alt="${o.name}">` : `<i class="fa-solid fa-tag fa-3x" style="color:var(--sakura-gold);"></i>`;
-                let deleteBtnHtml = isAdminMode ? `<button class="btn-delete-item" onclick="deleteOffer('${o.id}')" style="display:block;"><i class="fa-solid fa-trash"></i></button>` : '';
+                let imgContent = o.img ? `<img src="${o.img}" alt="${o.name}">` : `<i class="fa-solid fa-box fa-2x" style="color:var(--jp-red);"></i>`;
+                let deleteBtnHtml = isAdminMode ? `<button class="btn-delete-poster" onclick="deleteOffer('${o.id}')" style="display:block;"><i class="fa-solid fa-trash"></i> মুছুন</button>` : '';
 
                 const safeName = o.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                 
@@ -913,101 +819,55 @@
 
                 const isExpired = expiry ? (now > expiry) : false;
 
+                let discountPercent = 0;
+                let savingsAmount = 0;
+                if (o.oldPrice && o.newPrice && o.oldPrice > o.newPrice) {
+                    savingsAmount = o.oldPrice - o.newPrice;
+                    discountPercent = Math.round((savingsAmount / o.oldPrice) * 100);
+                }
+
                 return `
-                    <div class="offer-poster-card">
-                        <div class="poster-badge">${o.badge || 'SAKURA FLASH'}</div>
-                        <div class="timer-badge" id="timer-${o.id}">ক্যালকুলেট হচ্ছে...</div>
-                        <div class="poster-img-box">${imgContent}</div>
-                        <div class="poster-content">
-                            <div class="poster-item-name">${o.name}</div>
-                            <div class="poster-desc">${o.desc || ''}</div>
-                            <div class="price-row">
-                                <span class="old-price">৳ ${o.oldPrice}</span>
-                                <span class="new-price">৳ ${o.newPrice}</span>
+                    <div class="jp-poster-card">
+                        <div class="poster-top-banner">
+                            <div class="timer-badge-jp" id="timer-${o.id}">⏳ ১ ঘণ্টা</div>
+                            ${discountPercent > 0 ? `<div class="discount-circle-badge"><span class="percent">${discountPercent}%</span><span class="off-text">OFF</span></div>` : ''}
+
+                            <div class="poster-img-frame">
+                                ${imgContent}
+                                <div class="stamp-seal">櫻</div>
                             </div>
-                            <div class="btn-card-action">
-                                <button id="btn-order-${o.id}" 
-                                        ${isExpired ? 'disabled' : ''} 
-                                        onclick="openOrderModal('${safeName}', '${o.newPrice}', '${expiry}')" 
-                                        class="btn-order ${isExpired ? 'expired' : ''}">
-                                    <i class="fa-solid ${isExpired ? 'fa-lock' : 'fa-brands fa-whatsapp'}"></i> 
-                                    ${isExpired ? 'অফার শেষ (Expired)' : 'অর্ডার করুন'}
-                                </button>
-                                ${deleteBtnHtml}
+                        </div>
+
+                        <div class="poster-item-info">
+                            <div class="poster-main-title">${o.name}</div>
+                            ${o.desc ? `<div class="poster-desc-bn">${o.desc}</div>` : ''}
+                        </div>
+
+                        <div class="poster-price-section">
+                            <div class="price-compare-row">
+                                <span style="color:#aaa;">মূল্য:</span>
+                                <span class="old-price-strike">৳${o.oldPrice}</span>
+                                ${savingsAmount > 0 ? `<span class="save-pill-badge">ছাড় ৳${savingsAmount}</span>` : ''}
                             </div>
+
+                            <div class="special-price-box">
+                                <span class="special-label">স্পেশাল দাম</span>
+                                <span class="special-amount">৳${o.newPrice}</span>
+                            </div>
+
+                            <button id="btn-order-${o.id}" 
+                                    ${isExpired ? 'disabled' : ''} 
+                                    onclick="openOrderModal('${safeName}', '${o.newPrice}', '${expiry}')" 
+                                    class="btn-order-poster ${isExpired ? 'expired' : ''}">
+                                <i class="fa-brands fa-whatsapp"></i> ${isExpired ? 'অফার শেষ' : 'অর্ডার করুন'}
+                            </button>
+                            ${deleteBtnHtml}
                         </div>
                     </div>
                 `;
             }).join('');
 
             updateTimersUI();
-        }
-
-        /* Sakura Falling Petals Animation Canvas */
-        function initSakuraPetals() {
-            const canvas = document.getElementById('sakura-canvas');
-            const ctx = canvas.getContext('2d');
-
-            function resize() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            resize();
-            window.addEventListener('resize', resize);
-
-            const petals = Array.from({ length: 25 }, () => ({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 8 + 4,
-                speedY: Math.random() * 1.2 + 0.5,
-                speedX: Math.random() * 0.8 - 0.4,
-                angle: Math.random() * 360,
-                spin: Math.random() * 0.02 - 0.01
-            }));
-
-            function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                petals.forEach(p => {
-                    ctx.save();
-                    ctx.translate(p.x, p.y);
-                    ctx.rotate(p.angle);
-                    ctx.fillStyle = 'rgba(255, 182, 193, 0.4)';
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, p.size, p.size / 2, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-
-                    p.y += p.speedY;
-                    p.x += p.speedX;
-                    p.angle += p.spin;
-
-                    if (p.y > canvas.height) {
-                        p.y = -10;
-                        p.x = Math.random() * canvas.width;
-                    }
-                });
-                requestAnimationFrame(draw);
-            }
-            draw();
-        }
-
-        /* PWA App Install Prompt */
-        let deferredPrompt;
-        const installBtn = document.getElementById('installWidgetBtn');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBtn.style.display = 'flex';
-        });
-
-        function installWidgetApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
-            } else {
-                alert("📱 উইজেট সেv করতে ব্রাউজারের মেনু থেকে 'Add to Home Screen' সিলেক্ট করুন!");
-            }
         }
     </script>
 </body>
