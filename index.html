@@ -571,7 +571,6 @@
     </div>
 
     <script>
-        // Updated App Script Web App URL
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx4sFfS-XrwPP9_w3S_6Y3USnaYJ9Rk_lD3oD-RUE9qCfhqwTLeYD7n_73k-H5sAIF7/exec";
         const SHOP_WHATSAPP_NUMBER = "8801789504376";
         const ADMIN_PASS = "28282805";
@@ -579,11 +578,16 @@
         let offers = [];
         let isAdminMode = false;
         let uploadedBase64Image = "";
+        let isFetching = false;
 
         document.addEventListener('DOMContentLoaded', () => {
             loadOffersFromCache();
             fetchOffersFromCloud();
-            setInterval(fetchOffersFromCloud, 15000);
+            
+            // Poll fast every 2 seconds to reflect Google Sheet deletions & additions quickly
+            setInterval(fetchOffersFromCloud, 2000);
+            
+            // Update timers every second
             setInterval(updateTimersUI, 1000);
         });
 
@@ -625,22 +629,29 @@
         }
 
         function fetchOffersFromCloud() {
-            if (!SCRIPT_URL) return;
-            
-            fetch(SCRIPT_URL + "?action=getOffers")
+            if (!SCRIPT_URL || isFetching) return;
+            isFetching = true;
+
+            // Cache-busting timestamp parameter ensures immediate fresh response from Google Sheets
+            fetch(SCRIPT_URL + "?action=getOffers&_t=" + Date.now())
                 .then(res => res.text())
                 .then(text => {
+                    isFetching = false;
                     try {
                         const data = JSON.parse(text);
                         if (Array.isArray(data)) {
-                            offers = data;
-                            saveOffersToCache(offers);
-                            renderOffers();
+                            // Only re-render if data has changed to prevent UI flicker
+                            if (JSON.stringify(offers) !== JSON.stringify(data)) {
+                                offers = data;
+                                saveOffersToCache(offers);
+                                renderOffers();
+                            }
                             document.getElementById('syncIndicator').innerText = "🟢 সিঙ্কড";
                         }
                     } catch(err) {}
                 })
                 .catch(err => {
+                    isFetching = false;
                     document.getElementById('syncIndicator').innerText = "🔴 অফলাইন";
                 });
         }
@@ -691,6 +702,7 @@
                 img: finalImage
             };
 
+            // Immediate optimistic UI update
             offers.unshift(newOffer);
             saveOffersToCache(offers);
             renderOffers();
@@ -704,12 +716,13 @@
                 document.getElementById('offerForm').reset();
                 uploadedBase64Image = "";
                 alert(`✅ অফার পাবলিশ করা হয়েছে!`);
-                setTimeout(fetchOffersFromCloud, 1000);
+                setTimeout(fetchOffersFromCloud, 500);
             });
         }
 
         function deleteOffer(id) {
             if (confirm('⚠️ অফারটি মুছে ফেলতে চান?')) {
+                // Immediate optimistic removal from local state
                 offers = offers.filter(o => String(o.id) !== String(id));
                 saveOffersToCache(offers);
                 renderOffers();
@@ -719,7 +732,7 @@
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: id, action: 'delete' })
-                }).then(() => setTimeout(fetchOffersFromCloud, 1000));
+                }).then(() => setTimeout(fetchOffersFromCloud, 500));
             }
         }
 
@@ -766,13 +779,12 @@
             closeOrderModal();
         }
 
-        // Helper to get remaining time string for any offer item
         function getTimerText(offer, now) {
             let expiry = Number(offer.expiryTime);
             if (!expiry && offer.createdAt && offer.durationMinutes) {
                 expiry = Number(offer.createdAt) + (Number(offer.durationMinutes) * 60 * 1000);
             }
-            if (!expiry) return "⏳ 0মি 00সে";
+            if (!expiry) return "⏰ শেষ";
 
             const diff = expiry - now;
             if (diff <= 0) {
