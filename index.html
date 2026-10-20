@@ -33,7 +33,7 @@
         }
 
         .portal-container {
-            max-width: 1200px; /* 4ta item pasapashi rakhar jonno boro width */
+            max-width: 1200px;
             margin: 0 auto;
         }
 
@@ -156,22 +156,21 @@
 
         .offers-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); /* এক সারিতে ৪টি কার্ড */
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
         }
 
         @media (max-width: 900px) {
             .offers-grid {
-                grid-template-columns: repeat(2, 1fr); /* ট্যাবলেটে ২টি */
+                grid-template-columns: repeat(2, 1fr);
             }
         }
         @media (max-width: 500px) {
             .offers-grid {
-                grid-template-columns: 1fr; /* মোবাইল ফোনে ১টি করে */
+                grid-template-columns: 1fr;
             }
         }
 
-        /* ছোট ও প্রিমিয়াম পোস্টার কার্ড */
         .jp-poster-card {
             background: var(--jp-black);
             border: 2px solid var(--jp-yellow);
@@ -245,7 +244,7 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            height: 90px; /* একদম ছোট প্রিমিয়াম সাইজ */
+            height: 90px;
         }
 
         .poster-img-frame img {
@@ -572,7 +571,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxqk0qaU_NOloPUFKybJvt2LakpQXw2ZUiAJbpM7MO1H7IKJ32xEY-s28USBjlDCKIi/exec";
+        // Updated App Script Web App URL
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx4sFfS-XrwPP9_w3S_6Y3USnaYJ9Rk_lD3oD-RUE9qCfhqwTLeYD7n_73k-H5sAIF7/exec";
         const SHOP_WHATSAPP_NUMBER = "8801789504376";
         const ADMIN_PASS = "28282805";
 
@@ -766,6 +766,25 @@
             closeOrderModal();
         }
 
+        // Helper to get remaining time string for any offer item
+        function getTimerText(offer, now) {
+            let expiry = Number(offer.expiryTime);
+            if (!expiry && offer.createdAt && offer.durationMinutes) {
+                expiry = Number(offer.createdAt) + (Number(offer.durationMinutes) * 60 * 1000);
+            }
+            if (!expiry) return "⏳ 0মি 00সে";
+
+            const diff = expiry - now;
+            if (diff <= 0) {
+                return "⏰ শেষ";
+            } else {
+                const totalSecs = Math.floor(diff / 1000);
+                const mins = Math.floor(totalSecs / 60);
+                const secs = totalSecs % 60;
+                return `⏳ ${mins}মি ${secs < 10 ? '0' : ''}${secs}সে`;
+            }
+        }
+
         function updateTimersUI() {
             const now = Date.now();
             offers.forEach(o => {
@@ -787,10 +806,7 @@
                             btnEl.innerHTML = `অফার শেষ`;
                         }
                     } else {
-                        const totalSecs = Math.floor(diff / 1000);
-                        const mins = Math.floor(totalSecs / 60);
-                        const secs = totalSecs % 60;
-                        if (timerEl) timerEl.innerText = `⏳ ${mins}মি ${secs < 10 ? '0' : ''}${secs}সে`;
+                        if (timerEl) timerEl.innerText = getTimerText(o, now);
                     }
                 }
             });
@@ -818,6 +834,7 @@
                 }
 
                 const isExpired = expiry ? (now > expiry) : false;
+                const timerString = getTimerText(o, now);
 
                 let discountPercent = 0;
                 let savingsAmount = 0;
@@ -829,7 +846,7 @@
                 return `
                     <div class="jp-poster-card">
                         <div class="poster-top-banner">
-                            <div class="timer-badge-jp" id="timer-${o.id}">⏳ ১ ঘণ্টা</div>
+                            <div class="timer-badge-jp" id="timer-${o.id}">${timerString}</div>
                             ${discountPercent > 0 ? `<div class="discount-circle-badge"><span class="percent">${discountPercent}%</span><span class="off-text">OFF</span></div>` : ''}
 
                             <div class="poster-img-frame">
